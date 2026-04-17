@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewellery Rate Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif; margin: 5px; background: #F6F4FB; color: #2F2F2F;
+            -webkit-user-select: none; user-select: none; overflow-x: hidden;
+            max-width: 600px; margin: 5px auto;
+        }
+
+        /* TOP NAVIGATION */
+        .top-nav {
+            display: flex; background: #FFFFFF; border-radius: 6px;
+            border: 1px solid #E8E5F4; padding: 3px; margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
+            gap: 2px;
+        }
+        .nav-btn {
+            background: transparent; color: #666666; font-size: 11px;
+            border: none; flex: 1; padding: 8px 2px; cursor: pointer;
+            font-weight: bold; border-radius: 4px; transition: all 0.2s ease; text-align: center;
+            white-space: nowrap;
+        }
+        .nav-btn.active { background: #9B8AD9; color: #FFFFFF; }
+        #toggleSettings:active { background: #F6F4FB; }
+
+        /* PAGE SWITCHING STYLES */
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SIDE PANEL STYLES */
+        .side-panel {
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+            background: #FFFFFF; box-shadow: 2px 0 15px rgba(0,0,0,0.15);
+            z-index: 2000; transition: 0.3s ease; display: flex; flex-direction: column;
+        }
+        .side-panel.open { left: 0; }
+        .side-panel-header {
+            padding: 20px; background: #9B8AD9; color: white;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .side-panel-header h2 { margin: 0; font-size: 18px; }
+        #closeSettings { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .side-panel-content { padding: 20px; overflow-y: auto; }
+
+        .advanced-menu { margin-top: 15px; padding-top: 10px; border-top: 1px solid #E8E5F4; display: none; }
+        .advanced-menu.show { display: block; }
+        .toggle-adv-btn {
+            background: #FBFAFF !important; color: #9B8AD9 !important; border: 1px solid #E8E5F4 !important;
+            font-size: 12px !important; margin-top: 15px; padding: 8px !important; width: 100%; border-radius: 8px; cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; z-index: 1500;
+        }
+        .overlay.show { display: block; }
+
+        /* UI STYLES */
+        .calculator-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .calculator { flex: 1; background: #FFFFFF; padding: 15px; border-radius: 12px; border: 1px solid #E8E5F4; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+        label { display: block; margin-top: 10px; font-size: 14px; }
+
+        input, select {
+            width: 100%; padding: 8px; margin-top: 4px; background: #FFFFFF;
+            color: #2F2F2F; border: 1px solid #E8E5F4; border-radius: 8px;
+            box-sizing: border-box; -webkit-user-select: auto; user-select: auto;
+        }
+        .input-row { display: flex; gap: 15px; margin-top: 10px; justify-content: space-between; }
+        .input-row > div { flex: 1; }
+        .input-row label { margin-top: 0; }
+
+        /* METAL BOXES STYLES */
+        .metal-selector { display: flex; gap: 6px; margin-top: 6px; margin-bottom: 4px; }
+        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; cursor: pointer; transition: 0.2s; line-height: 1.2; }
+        .metal-btn.active { background: #9B8AD9; color: #FFF; border-color: #9B8AD9; }
+
+        /* RESULTS STYLES */
+        .result { margin-top: 5px; margin-bottom: 12px; padding: 8px; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 10px; }
+        .result-row { display: flex; gap: 8px; margin-bottom: 6px; }
+        .result-row > div { flex: 1; background: #FFFFFF; border: 1px solid #E8E5F4; padding: 4px 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .result-label { color: #666666; font-size: 11px; font-weight: bold; display: block; }
+        .result-value { color: #2F2F2F; font-weight: bold; font-size: 14px; }
+        .final-total-box { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #B8A9E0; text-align: center; font-size: 17px; font-weight: bold; color: darkred; }
+        .urd-total-box { color: #4CAF50 !important; }
+
+        /* BILL PANELS */
+        .bill-panel { margin-top: 15px; padding: 10px; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; }
+        .bill-panel.hide { display: none; }
+        .bill-header { color: #9B8AD9; font-size: 14px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+
+        .bill-table-head, .bill-item { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+        .bill-table-head { color: #9B8AD9; font-weight: bold; border-bottom: 1px solid #E8E5F4; padding-bottom: 4px; margin-bottom: 4px; }
+        .bill-item { color: #666666; margin-bottom: 4px; }
+
+        /* Estimate Table Columns */
+        .bill-col { flex: 1; text-align: center; }
+        .item-col { text-align: left; flex: 1.2; }
+        .total-col { text-align: right; flex: 1.5; font-weight: bold; color:#2F2F2F; }
+        .action-col { flex: 0.8; text-align: right; white-space: nowrap; }
+
+        /* URD Table Columns (Compact) */
+        .urd-col { flex: 1; text-align: center; font-size: 9px; padding: 0 1px; }
+        .urd-col.item-col { flex: 1.2; text-align: left; }
+        .urd-col.total-col { flex: 1.5; text-align: right; color:#2F2F2F; font-weight:bold; }
+        .urd-col.action-col { flex: 1.2; text-align: right; white-space: nowrap; }
+
+        .remove-btn { color: #E53935; font-size: 14px; cursor: pointer; padding: 2px 4px; font-weight:bold; }
+        .edit-btn { color: #2196F3; font-size: 14px; cursor: pointer; padding: 2px 4px; font-weight:bold; }
+        .urd-remove { color: #E53935; font-size: 12px; cursor: pointer; padding: 2px; font-weight:bold; }
+        .urd-edit { color: #2196F3; font-size: 12px; cursor: pointer; padding: 2px; font-weight:bold; }
+        .remove-btn:hover, .edit-btn:hover, .urd-remove:hover, .urd-edit:hover { opacity: 0.7; }
+
+        .grand-total-amount { font-size: 13px; font-weight: bold; color: #2F2F2F; margin-top: 5px; padding-top: 5px; border-top: 1px solid #E8E5F4; }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .silver-total-row { color: #607D8B; display: none; }
+        .grand-final-row { font-size: 15px; color: darkred; border-top: 1px dashed #B8A9E0; padding-top: 6px; margin-top: 4px; }
+
+        /* SETTLEMENT BOX */
+        .settlement-box { margin-top: 12px; padding: 12px; background: #FFFFFF; border: 2px dashed #9B8AD9; border-radius: 8px; }
+        .set-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+        .set-final { display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; color: #9B8AD9; border-top: 1px dashed #E8E5F4; padding-top: 6px; margin-top: 4px; }
+
+        /* BUTTONS */
+        .button-row { display: flex; gap: 10px; margin-top: 15px; }
+        .button-row button { margin-top: 0 !important; }
+        .bill-actions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; justify-content: space-between; }
+        .bill-actions button { margin-top: 0 !important; padding: 8px !important; font-size: 11px !important; flex: 1; min-width: 60px; }
+
+        button { background: #9B8AD9; color: white; font-weight: bold; padding: 10px; width: 100%; border: none; border-radius: 8px; cursor: pointer; }
+        .add-btn { background: #4CAF50 !important; }
+        .share-btn { background: #25D366 !important; }
+        .img-btn { background: #FF9800 !important; }
+        .clear-btn { background: #FFF !important; color: #E53935 !important; border: 1px solid #E53935 !important; }
+        .settle-btn { background: #2196F3 !important; }
+
+        select, input, button { -webkit-tap-highlight-color: transparent; outline: none; }
+        select { appearance: listbox; -webkit-appearance: menulist; cursor: pointer; }
+        select option { background-color: #FFFFFF; color: #2F2F2F; }
+
+        footer { background: transparent; text-align: center; padding: 10px; margin-top: 5px; }
+        .footer-title { color: #9B8AD9; font-size: 14px; font-weight: bold; }
+        .footer-author { color: #666666; font-size: 11px; }
+
+        /* IMAGE MODAL STYLES */
+        .img-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
+        .img-modal.show { display: flex; animation: fadeIn 0.3s ease; }
+        .img-modal img { max-width: 90%; max-height: 70vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .modal-btn-container { display: flex; gap: 15px; width: 90%; max-width: 400px; margin-top: 20px; }
+        .modal-btn-container button { margin-top: 0 !important; flex: 1; font-size: 14px; padding: 12px; }
+
+        /* CUSTOM DIALOG (REPLACES NATIVE ALERT/CONFIRM) */
+        .custom-dialog-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5000; justify-content: center; align-items: center; }
+        .custom-dialog-overlay.show { display: flex; animation: fadeIn 0.2s ease; }
+        .custom-dialog { background: #FFFFFF; padding: 20px; border-radius: 12px; width: 80%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .custom-dialog-text { color: #2F2F2F; font-size: 15px; margin-bottom: 20px; font-weight: bold; line-height: 1.4; }
+        .custom-dialog-btns { display: flex; gap: 10px; }
+        .custom-dialog-btn { flex: 1; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-cancel { background: #E8E5F4; color: #666; }
+        .btn-confirm { background: #E53935; color: #FFF; }
+        .btn-ok { background: #9B8AD9; color: #FFF; }
+
+        /* A5 PRINT TEMPLATE STYLES */
+        #a5-template-container { position: absolute; top: -9999px; left: -9999px; }
+        .a5-paper { width: 595px; min-height: 842px; background: white; padding: 40px; box-sizing: border-box; font-family: Arial, sans-serif; color: #000; border: 1px solid #ccc; }
+        .a5-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #9B8AD9; padding-bottom: 15px; }
+        .a5-title { font-size: 28px; font-weight: bold; color: #9B8AD9; margin-bottom: 5px; }
+        .a5-date { font-size: 14px; color: #666; }
+        .a5-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .a5-table th, .a5-table td { border-bottom: 1px solid #eee; padding: 12px 8px; text-align: left; font-size: 14px; }
+        .a5-table th { color: #9B8AD9; font-weight: bold; border-bottom: 2px solid #eee; }
+        .a5-table .right { text-align: right; }
+        .a5-totals { border-top: 2px solid #9B8AD9; padding-top: 15px; }
+        .a5-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px; }
+        .a5-grand { font-size: 22px; font-weight: bold; color: darkred; margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 15px; }
+        .a5-footer { margin-top: 60px; text-align: center; font-size: 14px; color: #888; border-top: 1px solid #eee; padding-top: 20px;}
+        .a5-settlement { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 2px dashed #9B8AD9; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<div id="sidebarOverlay" class="overlay"></div>
+
+<div id="customDialogOverlay" class="custom-dialog-overlay">
+    <div class="custom-dialog">
+        <div id="customDialogText" class="custom-dialog-text">Message</div>
+        <div id="customDialogBtns" class="custom-dialog-btns"></div>
+    </div>
+</div>
+
+<div id="imageModal" class="img-modal">
+    <img id="generatedImageResult" src="" alt="Generated Receipt">
+    <div class="modal-btn-container">
+        <button id="modalShareActionBtn" class="share-btn">📤 Share Image</button>
+        <button class="clear-btn" onclick="closeImageModal()">✕ Close</button>
+    </div>
+</div>
+
+<div id="a5-template-container">
+    <div id="a5-paper" class="a5-paper">
+        <div class="a5-header">
+            <div class="a5-title" id="a5-doc-title">Estimate Quotation</div>
+            <div class="a5-date" id="a5-doc-date"></div>
+        </div>
+        <table class="a5-table" id="a5-items-table">
+            <thead>
+            <tr id="a5-table-head">
+            </tr>
+            </thead>
+            <tbody id="a5-table-body">
+            </tbody>
+        </table>
+        <div class="a5-totals" id="a5-totals-area">
+        </div>
+        <div id="a5-settlement-area"></div>
+        <div class="a5-footer">Thank you for your business!</div>
+    </div>
+</div>
+
+<nav id="sidePanel" class="side-panel">
+    <div class="side-panel-header">
+        <h2>Settings</h2>
+        <button id="closeSettings" type="button">✕</button>
+    </div>
+    <div class="side-panel-content">
+        <label>💰 24K Rate: <input type="number" id="rate24" value="16880"></label>
+        <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="90"></label>
+
+        <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Settings ▾</button>
+        <div id="advancedMenu" class="advanced-menu">
+            <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300"></label>
+            <label>22K Rate (₹ or %): <input type="text" id="pct22" value="93%"></label>
+            <label>20K Rate (₹ or %): <input type="text" id="pct20" value="85%"></label>
+            <label>18K Rate (₹ or %): <input type="text" id="pct18" value="80%"></label>
+            <label>GST %: <input type="number" id="gstPct" value="3"></label>
+        </div>
+        <button id="closeSettingsBtn" type="button" style="margin-top:15px;">Done</button>
+    </div>
+</nav>
+
+<nav class="top-nav">
+    <button id="toggleSettings" class="nav-btn">⚙️ Set</button>
+    <button id="navSale" class="nav-btn active">🧾 Est.</button>
+    <button id="navUrd" class="nav-btn">⚖️ URD</button>
+    <button id="navRates" class="nav-btn">📊 Rates</button>
+    <button id="navHistory" class="nav-btn">📜 Hist.</button>
+</nav>
+
+<div class="calculator-container">
+
+    <div id="pageSale" class="calculator page active">
+        <fieldset style="border:none; padding:0; margin:0;">
+
+            <div class="result" id="goldResult"></div>
+
+            <label style="display:flex; justify-content:space-between; align-items:flex-end;">
+                Metal Type
+            </label>
+            <div class="metal-selector" id="saleMetalSelector">
+                <div class="metal-btn active" data-val="24">24K</div>
+                <div class="metal-btn" data-val="22">22K</div>
+                <div class="metal-btn" data-val="20">20K</div>
+                <div class="metal-btn" data-val="18">18K</div>
+                <div class="metal-btn" data-val="silver">Sil</div>
+            </div>
+            <input type="hidden" id="metalType" value="24">
+
+            <label id="silverRateBox" style="display:none; margin-top:8px;">
+                Silver Rate ₹/gm
+                <input type="number" id="silverRateInput">
+            </label>
+
+            <div class="input-row">
+                <div><label>⚖️ WT: <input type="number" id="goldWeight" value="0"></label></div>
+                <div><label>💎 St. ₹: <input type="number" id="stoneCharge" value="0"></label></div>
+            </div>
+
+            <div class="input-row">
+                <div>
+                    <label>MK TY:
+                        <select id="makingType">
+                            <option value="percent">%</option>
+                            <option value="gram">₹/gm</option>
+                            <option value="piece">₹/piece</option>
+                        </select>
+                    </label>
+                </div>
+                <div>
+                    <label id="makingLabel"><span id="makeLabelText">Make %:</span> <input type="number" id="makingValue" value="10"></label>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button id="calcButton" type="button">Calculate</button>
+                <button id="addToBillBtn" type="button" class="add-btn">➕ Add Item</button>
+            </div>
+
+            <div id="billPanel" class="bill-panel hide">
+                <div class="bill-header">Estimate Quotation</div>
+
+                <div class="bill-table-head">
+                    <span class="bill-col item-col">Item</span>
+                    <span class="bill-col">Rate</span>
+                    <span class="bill-col">WT</span>
+                    <span class="bill-col">MK</span>
+                    <span class="bill-col">ST</span>
+                    <span class="bill-col total-col">Total</span>
+                    <span class="bill-col action-col"></span>
+                </div>
+
+                <div id="billItemsList"></div>
+
+                <div class="grand-total-amount">
+                    <div class="total-row">
+                        <span>Gold Total (<span id="gtGoldWt">0.000</span>g):</span>
+                        <span>₹<span id="gtGoldVal">0.00</span></span>
+                    </div>
+                    <div class="total-row silver-total-row" id="gtSilverRow">
+                        <span>Silver Total (<span id="gtSilverWt">0.000</span>g):</span>
+                        <span>₹<span id="gtSilverVal">0.00</span></span>
+                    </div>
+                    <div class="total-row grand-final-row">
+                        <span>Grand Total:</span>
+                        <span>₹<span id="grandTotalValue">0.00</span></span>
+                    </div>
+                </div>
+
+                <div class="bill-actions">
+                    <button id="saveBillBtn" type="button" class="add-btn">💾 Save</button>
+                    <button id="shareBillBtn" type="button" class="share-btn">💬 Text</button>
+                    <button id="imageBillBtn" type="button" class="img-btn">🖼️ Image</button>
+                    <button id="clearBillBtn" type="button" class="clear-btn">Clear</button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div id="pageUrd" class="calculator page">
+        <fieldset style="border:none; padding:0; margin:0;">
+
+            <div class="result" id="urdResult">
+                <div class="result-row">
+                    <div><span class="result-label">Net Wt</span><span class="result-value">0.000g</span></div>
+                    <div><span class="result-label">Fine Wt</span><span class="result-value">0.000g</span></div>
+                </div>
+                <div class="final-total-box urd-total-box">💰 Value: ₹0.00</div>
+            </div>
+
+            <label>Metal Type</label>
+            <div class="metal-selector" id="urdMetalSelector">
+                <div class="metal-btn active" data-val="gold">Gold</div>
+                <div class="metal-btn" data-val="silver">Silver</div>
+            </div>
+            <input type="hidden" id="urdMetalType" value="gold">
+
+            <div class="input-row">
+                <div><label>⚖️ Gross Wt: <input type="number" id="urdWt" value="0" step="0.001"></label></div>
+                <div><label>➖ Less Wt: <input type="number" id="urdLessWt" value="0" step="0.001"></label></div>
+            </div>
+
+            <div class="input-row">
+                <div><label>📊 Purity (%): <input type="number" id="urdPct" value="80" step="0.1"></label></div>
+                <div><label>💵 Rate (₹): <input type="number" id="urdRate" value="16580"></label></div>
+            </div>
+
+            <div class="button-row">
+                <button id="calcUrdBtn" type="button">Calculate</button>
+                <button id="addUrdBtn" type="button" class="add-btn">➕ Add URD</button>
+            </div>
+
+            <div id="urdBillPanel" class="bill-panel hide">
+                <div class="bill-header">Old Metal (URD) Items</div>
+
+                <div class="bill-table-head">
+                    <span class="urd-col item-col">Item</span>
+                    <span class="urd-col">GWt</span>
+                    <span class="urd-col">LWt</span>
+                    <span class="urd-col">Net</span>
+                    <span class="urd-col">Fine</span>
+                    <span class="urd-col">%</span>
+                    <span class="urd-col total-col">Total</span>
+                    <span class="urd-col action-col"></span>
+                </div>
+
+                <div id="urdItemsList"></div>
+
+                <div class="grand-total-amount">
+
+                    <div class="total-row" style="color:#666; font-size:11px; justify-content:space-between; border-bottom:1px solid #E8E5F4; padding-bottom:6px; margin-bottom:6px;">
+                        <span><b>GWt:</b> <span id="urdTotalGross">0.00</span>g</span>
+                        <span><b>LWt:</b> <span id="urdTotalLess">0.00</span>g</span>
+                        <span><b>Net:</b> <span id="urdTotalNet">0.00</span>g</span>
+                        <span><b>Fine:</b> <span id="urdTotalFine">0.00</span>g</span>
+                    </div>
+
+                    <div class="total-row">
+                        <span>Gold Value (<span id="urdGoldWt">0.000</span>g):</span>
+                        <span>₹<span id="urdGoldVal">0.00</span></span>
+                    </div>
+                    <div class="total-row silver-total-row" id="urdSilverRow">
+                        <span>Silver Value (<span id="urdSilverWt">0.000</span>g):</span>
+                        <span>₹<span id="urdSilverVal">0.00</span></span>
+                    </div>
+                    <div class="total-row grand-final-row" style="color:#4CAF50;">
+                        <span>Grand Total:</span>
+                        <span>₹<span id="urdGrandTotalValue">0.00</span></span>
+                    </div>
+                </div>
+
+                <div class="bill-actions">
+                    <button id="putSaleBtn" type="button" class="settle-btn">🔄 Put Est.</button>
+                    <button id="saveUrdBtn" type="button" class="add-btn">💾 Save</button>
+                    <button id="shareUrdBtn" type="button" class="share-btn">💬 Text</button>
+                    <button id="imageUrdBtn" type="button" class="img-btn">🖼️ Image</button>
+                    <button id="clearUrdBtn" type="button" class="clear-btn">Clear</button>
+                </div>
+
+                <div id="settlementBox" class="settlement-box hide">
+                    <div class="set-row">
+                        <span>Estimate Total:</span>
+                        <span id="setSaleTotal">₹0.00</span>
+                    </div>
+                    <div class="set-row" style="color: #E53935;">
+                        <span>Less Old Metal:</span>
+                        <span id="setUrdTotal">- ₹0.00</span>
+                    </div>
+                    <div class="set-final">
+                        <span>Final Amount:</span>
+                        <span id="setFinalAmount">₹0.00</span>
+                    </div>
+                    <div id="setPayStatus" style="text-align:right; font-size:11px; margin-top:2px; font-weight:bold;"></div>
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+
+    <div id="pageRates" class="calculator page">
+        <h3 style="color:#9B8AD9; text-align:center; margin-top:0; border-bottom:1px solid #E8E5F4; padding-bottom:10px;">Live Rate Board</h3>
+        <div class="result" id="rateBoardContent" style="padding: 15px; margin-top: 15px;">
+        </div>
+    </div>
+
+    <div id="pageHistory" class="calculator page">
+        <h3 style="color:#9B8AD9; text-align:center; margin-top:0; border-bottom:1px solid #E8E5F4; padding-bottom:10px;">Saved Bills History</h3>
+        <div class="result" style="text-align:center; font-size:12px; color:#666;">
+            👆 Tap a saved bill below to load it back into the Estimate and URD tabs.
+        </div>
+        <div id="historyList" style="margin-top:15px;">
+        </div>
+        <button id="clearHistoryBtn" type="button" class="clear-btn" style="margin-top: 15px;">🗑️ Clear All History</button>
+    </div>
+
+</div>
+
+<footer>
+    <span class="footer-title">Jewellery Calculator</span><br>
+    <span class="footer-author">by Arpit Golechha</span>
+</footer>
+
+<script>
+    // --- SECURE CUSTOM DIALOG LOGIC ---
+    function customAlert(msg) {
+        document.getElementById('customDialogText').innerText = msg;
+        document.getElementById('customDialogBtns').innerHTML = `<button class="custom-dialog-btn btn-ok" onclick="closeCustomDialog()">OK</button>`;
+        document.getElementById('customDialogOverlay').classList.add('show');
+    }
+
+    function customConfirm(msg, onConfirm) {
+        document.getElementById('customDialogText').innerText = msg;
+        document.getElementById('customDialogBtns').innerHTML = `
+            <button class="custom-dialog-btn btn-cancel" onclick="closeCustomDialog()">Cancel</button>
+            <button class="custom-dialog-btn btn-confirm" id="confirmYesBtn">Yes, Delete</button>
+        `;
+        document.getElementById('customDialogOverlay').classList.add('show');
+        document.getElementById('confirmYesBtn').onclick = () => {
+            closeCustomDialog();
+            onConfirm();
+        };
+    }
+
+    window.closeCustomDialog = function() {
+        document.getElementById('customDialogOverlay').classList.remove('show');
+    };
+
+
+    // --- TOP NAVIGATION LOGIC ---
+    const navSale = document.getElementById('navSale');
+    const navUrd = document.getElementById('navUrd');
+    const navRates = document.getElementById('navRates');
+    const navHistory = document.getElementById('navHistory');
+    const pageSale = document.getElementById('pageSale');
+    const pageUrd = document.getElementById('pageUrd');
+    const pageRates = document.getElementById('pageRates');
+    const pageHistory = document.getElementById('pageHistory');
+
+    function switchPage(activeNav, activePage) {
+        [navSale, navUrd, navRates, navHistory].forEach(btn => btn.classList.remove('active'));
+        [pageSale, pageUrd, pageRates, pageHistory].forEach(page => page.classList.remove('active'));
+        activeNav.classList.add('active');
+        activePage.classList.add('active');
+    }
+
+    navSale.addEventListener('click', () => switchPage(navSale, pageSale));
+    navUrd.addEventListener('click', () => switchPage(navUrd, pageUrd));
+    navRates.addEventListener('click', () => { updateRateBoard(); switchPage(navRates, pageRates); });
+    navHistory.addEventListener('click', () => { renderHistory(); switchPage(navHistory, pageHistory); });
+
+    // --- SIDE PANEL LOGIC ---
+    const sidePanel = document.getElementById('sidePanel');
+    const overlay = document.getElementById('sidebarOverlay');
+    const advMenu = document.getElementById('advancedMenu');
+    const advBtn = document.getElementById('toggleAdvanced');
+
+    function closeSettingsPanel() { sidePanel.classList.remove('open'); overlay.classList.remove('show'); }
+
+    document.getElementById('toggleSettings').addEventListener('click', () => { sidePanel.classList.add('open'); overlay.classList.add('show'); });
+    document.getElementById('closeSettings').addEventListener('click', closeSettingsPanel);
+    document.getElementById('closeSettingsBtn').addEventListener('click', closeSettingsPanel);
+    overlay.addEventListener('click', closeSettingsPanel);
+
+    advBtn.addEventListener('click', () => {
+        advMenu.classList.toggle('show');
+        advBtn.innerHTML = advMenu.classList.contains('show') ? "Hide Settings ▴" : "Advanced Settings ▾";
+    });
+
+    function saveAllRates() {
+        ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting'].forEach(k => {
+            const el = document.getElementById(k);
+            if(el) localStorage.setItem(k, el.value);
+        });
+        updateRateBoard();
+    }
+
+    function loadSettings() {
+        ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting'].forEach(k => {
+            const v = localStorage.getItem(k);
+            if (v !== null && document.getElementById(k)) document.getElementById(k).value = v;
+        });
+        if (document.getElementById('silverRateSetting').value) document.getElementById('silverRateInput').value = document.getElementById('silverRateSetting').value;
+    }
+
+    function parseSmartRate(base, inputValue) {
+        const str = String(inputValue).trim();
+        if (str.includes('%')) {
+            const pct = parseFloat(str.replace('%', '')) || 0;
+            return base * (pct / 100);
+        } else {
+            const flat = parseFloat(str) || 0;
+            return base - flat;
+        }
+    }
+
+    function calculateDefaultUrdRate() {
+        const base = parseFloat(document.getElementById('rate24').value) || 0;
+        const diffInput = document.getElementById('urdDiff').value;
+        return parseSmartRate(base, diffInput);
+    }
+
+    // --- RATE BOARD LOGIC ---
+    function updateRateBoard() {
+        if(!document.getElementById('rateBoardContent')) return;
+        const r24 = computeKaratRate(24);
+        const r22 = computeKaratRate(22);
+        const r20 = computeKaratRate(20);
+        const r18 = computeKaratRate(18);
+        const rAg = parseFloat(document.getElementById('silverRateSetting').value) || 0;
+
+        document.getElementById('rateBoardContent').innerHTML = `
+            <div class="result-row" style="margin-bottom:12px;"><div><span class="result-label" style="font-size:12px;">Gold 24K</span><span class="result-value" style="font-size:16px;">₹${r24} /gm</span></div></div>
+            <div class="result-row" style="margin-bottom:12px;"><div><span class="result-label" style="font-size:12px;">Gold 22K</span><span class="result-value" style="font-size:16px;">₹${r22} /gm</span></div></div>
+            <div class="result-row" style="margin-bottom:12px;"><div><span class="result-label" style="font-size:12px;">Gold 20K</span><span class="result-value" style="font-size:16px;">₹${r20} /gm</span></div></div>
+            <div class="result-row" style="margin-bottom:12px;"><div><span class="result-label" style="font-size:12px;">Gold 18K</span><span class="result-value" style="font-size:16px;">₹${r18} /gm</span></div></div>
+            <div class="result-row"><div><span class="result-label" style="font-size:12px; color:#607D8B;">Silver</span><span class="result-value" style="font-size:16px; color:#607D8B;">₹${rAg} /gm</span></div></div>
+        `;
+    }
+
+    // --- DYNAMIC METAL BOX RATE INJECTION ---
+    function updateSaleBoxRates() {
+        const rates = {
+            '24': computeKaratRate(24),
+            '22': computeKaratRate(22),
+            '20': computeKaratRate(20),
+            '18': computeKaratRate(18),
+            'silver': parseFloat(document.getElementById('silverRateInput').value) || parseFloat(document.getElementById('silverRateSetting').value) || 0
+        };
+
+        const activeVal = document.getElementById('metalType').value;
+
+        document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(btn => {
+            const val = btn.getAttribute('data-val');
+            const label = val === 'silver' ? 'Sil' : val + 'K';
+
+            if (val === activeVal) {
+                btn.innerHTML = `${label}<br><span style="font-size:10px; font-weight:normal; color:#FFF;">₹${rates[val]}</span>`;
+            } else {
+                btn.innerHTML = `${label}<br><span style="font-size:10px; visibility:hidden;">₹${rates[val]}</span>`;
+            }
+        });
+    }
+
+    function updateSaleMetalUI(val) {
+        document.getElementById('metalType').value = val;
+        document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-val') === val);
+        });
+        const box = document.getElementById("silverRateBox");
+        if(val === "silver") {
+            box.style.display = "block";
+            document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
+        } else { box.style.display = "none"; }
+
+        updateSaleBoxRates();
+        calculateGold();
+    }
+
+    document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(btn => {
+        btn.addEventListener('click', function() { updateSaleMetalUI(this.getAttribute('data-val')); });
+    });
+
+    function updateUrdMetalUI(val) {
+        document.getElementById('urdMetalType').value = val;
+        document.querySelectorAll('#urdMetalSelector .metal-btn').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-val') === val);
+        });
+
+        if(val === 'silver') {
+            document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value;
+        } else {
+            document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate();
+        }
+        calculateURD();
+    }
+
+    document.querySelectorAll('#urdMetalSelector .metal-btn').forEach(btn => {
+        btn.addEventListener('click', function() { updateUrdMetalUI(this.getAttribute('data-val')); });
+    });
+
+
+    // --- PAGE 1: ESTIMATE LOGIC ---
+    let currentFinalTotal = 0;
+    let billItems = [];
+    let saleGrandTotalNum = 0;
+
+    function roundToTen(x) { return Math.round(x / 10) * 10; }
+
+    function computeKaratRate(k) {
+        const base = parseFloat(document.getElementById('rate24').value) || 0;
+        if (k === 24) return roundToTen(base);
+        const inputVal = document.getElementById('pct' + k).value;
+        return roundToTen(parseSmartRate(base, inputVal));
+    }
+
+    function calculateGold() {
+        const type = document.getElementById('metalType').value;
+        const rate = type === "silver" ? (parseFloat(document.getElementById("silverRateInput").value) || 0) : computeKaratRate(parseInt(type));
+        const weight = parseFloat(document.getElementById('goldWeight').value) || 0;
+        const makingType = document.getElementById('makingType').value;
+        const makingVal = parseFloat(document.getElementById('makingValue').value) || 0;
+        const stone = parseFloat(document.getElementById('stoneCharge').value) || 0;
+        const gst = parseFloat(document.getElementById('gstPct').value) / 100;
+
+        let goldValue = rate * weight;
+        let makingCharge = (makingType === "percent") ? (goldValue * makingVal / 100) : (makingType === "gram" ? makingVal * weight : makingVal);
+        let subTotal = goldValue + makingCharge + stone;
+        let finalTotal = subTotal + (subTotal * gst);
+
+        currentFinalTotal = finalTotal;
+
+        document.getElementById("goldResult").innerHTML = `
+            <div class="result-row">
+                <div><span class="result-label">M Value</span><span class="result-value">₹${goldValue.toFixed(2)}</span></div>
+                <div><span class="result-label">MK₹</span><span class="result-value">₹${makingCharge.toFixed(2)}</span></div>
+            </div>
+            <div class="result-row">
+                <div><span class="result-label">St. ₹</span><span class="result-value">₹${stone.toFixed(2)}</span></div>
+                <div><span class="result-label">GST</span><span class="result-value">₹${(subTotal * gst).toFixed(2)}</span></div>
+            </div>
+            <div class="final-total-box">💰 Final Total: ₹${finalTotal.toFixed(2)}</div>`;
+    }
+
+    function renderBillPanel() {
+        const panel = document.getElementById('billPanel');
+        const list = document.getElementById('billItemsList');
+
+        if (billItems.length === 0) {
+            panel.classList.add('hide');
+            saleGrandTotalNum = 0;
+            return;
+        }
+
+        panel.classList.remove('hide');
+        list.innerHTML = '';
+
+        let goldVal = 0, goldWt = 0, silverVal = 0, silverWt = 0;
+
+        billItems.forEach((item, index) => {
+            if(item.type === 'silver') { silverVal += item.total; silverWt += item.weight; }
+            else { goldVal += item.total; goldWt += item.weight; }
+
+            const itemName = item.type === 'silver' ? `Sil ${index + 1}` : `${item.type}K ${index + 1}`;
+            list.innerHTML += `
+                <div class="bill-item">
+                    <span class="bill-col item-col">${itemName}</span>
+                    <span class="bill-col">${item.rate}</span>
+                    <span class="bill-col">${item.weight}</span>
+                    <span class="bill-col">${item.make}</span>
+                    <span class="bill-col">${item.stone}</span>
+                    <span class="bill-col total-col">${item.total.toFixed(0)}</span>
+                    <span class="bill-col action-col">
+                        <span class="edit-btn" data-index="${index}">✎</span>
+                        <span class="remove-btn" data-index="${index}">✖</span>
+                    </span>
+                </div>`;
+        });
+
+        document.getElementById('gtGoldWt').innerText = goldWt.toFixed(3);
+        document.getElementById('gtGoldVal').innerText = goldVal.toFixed(2);
+
+        const slvRow = document.getElementById('gtSilverRow');
+        if(silverVal > 0) {
+            slvRow.style.display = 'flex';
+            document.getElementById('gtSilverWt').innerText = silverWt.toFixed(3);
+            document.getElementById('gtSilverVal').innerText = silverVal.toFixed(2);
+        } else { slvRow.style.display = 'none'; }
+
+        saleGrandTotalNum = goldVal + silverVal;
+        document.getElementById('grandTotalValue').innerText = saleGrandTotalNum.toFixed(2);
+
+        if(!document.getElementById('settlementBox').classList.contains('hide')){ calculateSettlement(); }
+    }
+
+    document.getElementById('addToBillBtn').addEventListener('click', () => {
+        if (currentFinalTotal > 0) {
+            const typeVal = document.getElementById('metalType').value;
+            const rateVal = typeVal === "silver" ? (parseFloat(document.getElementById("silverRateInput").value) || 0) : computeKaratRate(parseInt(typeVal));
+
+            billItems.push({
+                type: typeVal,
+                makeType: document.getElementById('makingType').value,
+                rate: rateVal,
+                weight: parseFloat(document.getElementById('goldWeight').value || "0"),
+                make: parseFloat(document.getElementById('makingValue').value || "0"),
+                stone: parseFloat(document.getElementById('stoneCharge').value || "0"),
+                total: currentFinalTotal
+            });
+            renderBillPanel();
+
+            document.getElementById('goldWeight').value = "0";
+            document.getElementById('stoneCharge').value = "0";
+            document.getElementById('makingValue').value = "10";
+            calculateGold();
+
+        } else { customAlert("Please enter a weight before adding to the bill."); }
+    });
+
+    document.getElementById('billItemsList').addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+            billItems.splice(parseInt(e.target.getAttribute('data-index')), 1);
+            renderBillPanel();
+        }
+        else if (e.target.classList.contains('edit-btn')) {
+            const index = parseInt(e.target.getAttribute('data-index'));
+            const item = billItems[index];
+
+            updateSaleMetalUI(item.type);
+
+            document.getElementById('makingType').value = item.makeType;
+            document.getElementById('goldWeight').value = item.weight;
+            document.getElementById('makingValue').value = item.make;
+            document.getElementById('stoneCharge').value = item.stone;
+
+            billItems.splice(index, 1);
+            renderBillPanel();
+            calculateGold();
+            window.scrollTo(0, 0);
+        }
+    });
+
+    document.getElementById('clearBillBtn').addEventListener('click', () => { billItems = []; renderBillPanel(); });
+
+
+    // --- PAGE 2: URD LOGIC ---
+    let currentUrdTotal = 0;
+    let urdBillItems = [];
+    let urdGrandTotalNum = 0;
+
+    function updateUrdRateSystem() {
+        localStorage.removeItem('lastUrdGoldRate');
+        const currentMetal = document.getElementById('urdMetalType').value;
+        if(currentMetal === 'gold') {
+            document.getElementById('urdRate').value = calculateDefaultUrdRate();
+            calculateURD();
+        }
+    }
+
+    function calculateURD() {
+        const wt = parseFloat(document.getElementById('urdWt').value) || 0;
+        const lessWt = parseFloat(document.getElementById('urdLessWt').value) || 0;
+        const pct = parseFloat(document.getElementById('urdPct').value) || 0;
+        const rate = parseFloat(document.getElementById('urdRate').value) || 0;
+
+        const netWt = wt - lessWt;
+        const fineWt = netWt * (pct / 100);
+        const totalVal = fineWt * rate;
+
+        currentUrdTotal = totalVal;
+
+        document.getElementById("urdResult").innerHTML = `
+            <div class="result-row">
+                <div><span class="result-label">Net Wt</span><span class="result-value">${netWt.toFixed(3)}g</span></div>
+                <div><span class="result-label">Fine Wt</span><span class="result-value">${fineWt.toFixed(3)}g</span></div>
+            </div>
+            <div class="final-total-box urd-total-box">💰 Value: ₹${totalVal.toFixed(2)}</div>
+        `;
+    }
+
+    function renderUrdBillPanel() {
+        const panel = document.getElementById('urdBillPanel');
+        const list = document.getElementById('urdItemsList');
+
+        if (urdBillItems.length === 0) {
+            panel.classList.add('hide');
+            urdGrandTotalNum = 0;
+            document.getElementById('settlementBox').classList.add('hide');
+            return;
+        }
+
+        panel.classList.remove('hide');
+        list.innerHTML = '';
+
+        let goldVal = 0, goldWt = 0, silverVal = 0, silverWt = 0;
+        let totGross = 0, totLess = 0, totNet = 0, totFine = 0;
+
+        urdBillItems.forEach((item, index) => {
+            totGross += item.gross;
+            totLess += item.less;
+            totNet += item.netWt;
+            totFine += item.fine;
+
+            if(item.type === 'silver') { silverVal += item.total; silverWt += item.netWt; }
+            else { goldVal += item.total; goldWt += item.netWt; }
+
+            const itemName = item.type === 'silver' ? `Slv URD${index + 1}` : `Gld URD${index + 1}`;
+            list.innerHTML += `
+                <div class="bill-item">
+                    <span class="urd-col item-col">${itemName}</span>
+                    <span class="urd-col">${item.gross.toFixed(2)}</span>
+                    <span class="urd-col">${item.less.toFixed(2)}</span>
+                    <span class="urd-col">${item.netWt.toFixed(2)}</span>
+                    <span class="urd-col">${item.fine.toFixed(2)}</span>
+                    <span class="urd-col">${item.pct}</span>
+                    <span class="urd-col total-col">${item.total.toFixed(0)}</span>
+                    <span class="urd-col action-col">
+                        <span class="urd-edit" data-index="${index}">✎</span>
+                        <span class="urd-remove" data-index="${index}">✖</span>
+                    </span>
+                </div>`;
+        });
+
+        document.getElementById('urdTotalGross').innerText = totGross.toFixed(2);
+        document.getElementById('urdTotalLess').innerText = totLess.toFixed(2);
+        document.getElementById('urdTotalNet').innerText = totNet.toFixed(2);
+        document.getElementById('urdTotalFine').innerText = totFine.toFixed(2);
+
+        document.getElementById('urdGoldWt').innerText = goldWt.toFixed(3);
+        document.getElementById('urdGoldVal').innerText = goldVal.toFixed(2);
+
+        const slvRow = document.getElementById('urdSilverRow');
+        if(silverVal > 0) {
+            slvRow.style.display = 'flex';
+            document.getElementById('urdSilverWt').innerText = silverWt.toFixed(3);
+            document.getElementById('urdSilverVal').innerText = silverVal.toFixed(2);
+        } else { slvRow.style.display = 'none'; }
+
+        urdGrandTotalNum = goldVal + silverVal;
+        document.getElementById('urdGrandTotalValue').innerText = urdGrandTotalNum.toFixed(2);
+
+        if(!document.getElementById('settlementBox').classList.contains('hide')){ calculateSettlement(); }
+    }
+
+    document.getElementById('addUrdBtn').addEventListener('click', () => {
+        if (currentUrdTotal > 0) {
+            const wt = parseFloat(document.getElementById('urdWt').value || "0");
+            const lessWt = parseFloat(document.getElementById('urdLessWt').value || "0");
+            const pct = parseFloat(document.getElementById('urdPct').value || "0");
+            const netWt = wt - lessWt;
+            const fineWt = netWt * (pct / 100);
+            const metal = document.getElementById('urdMetalType').value;
+
+            urdBillItems.push({ type: metal, netWt: netWt, gross: wt, less: lessWt, pct: pct, fine: fineWt, total: currentUrdTotal });
+            renderUrdBillPanel();
+
+            document.getElementById('urdWt').value = "0";
+            document.getElementById('urdLessWt').value = "0";
+            document.getElementById('urdPct').value = "80";
+
+            if(metal === 'silver') { document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value; }
+            else {
+                document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate();
+            }
+            calculateURD();
+        } else { customAlert("Please enter Old Metal weight before adding."); }
+    });
+
+    document.getElementById('urdItemsList').addEventListener('click', (e) => {
+        if (e.target.classList.contains('urd-remove')) {
+            urdBillItems.splice(parseInt(e.target.getAttribute('data-index')), 1);
+            renderUrdBillPanel();
+        }
+        else if (e.target.classList.contains('urd-edit')) {
+            const index = parseInt(e.target.getAttribute('data-index'));
+            const item = urdBillItems[index];
+
+            updateUrdMetalUI(item.type);
+
+            document.getElementById('urdWt').value = item.gross;
+            document.getElementById('urdLessWt').value = item.less;
+            document.getElementById('urdPct').value = item.pct;
+
+            urdBillItems.splice(index, 1);
+            renderUrdBillPanel();
+            calculateURD();
+            window.scrollTo(0, 0);
+        }
+    });
+
+    document.getElementById('clearUrdBtn').addEventListener('click', () => { urdBillItems = []; renderUrdBillPanel(); });
+
+    // --- SECURE HISTORY SAVING LOGIC ---
+    let appHistory = JSON.parse(localStorage.getItem('appHistory')) || [];
+
+    function saveCurrentTransaction() {
+        if (billItems.length === 0 && urdBillItems.length === 0) {
+            customAlert("Nothing to save! Add some items first.");
+            return;
+        }
+
+        const dateStr = new Date().toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
+
+        let record = {
+            id: Date.now(),
+            date: dateStr,
+            billItems: JSON.parse(JSON.stringify(billItems)),
+            urdBillItems: JSON.parse(JSON.stringify(urdBillItems)),
+            saleTotal: saleGrandTotalNum,
+            urdTotal: urdGrandTotalNum
+        };
+
+        appHistory.unshift(record);
+        localStorage.setItem('appHistory', JSON.stringify(appHistory));
+        customAlert('✅ Complete transaction saved to History!');
+        renderHistory();
+    }
+
+    document.getElementById('saveBillBtn').addEventListener('click', saveCurrentTransaction);
+    document.getElementById('saveUrdBtn').addEventListener('click', saveCurrentTransaction);
+
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        if (appHistory.length === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No saved bills yet. Click "Save" on a bill to store it here.</div>';
+            return;
+        }
+
+        list.innerHTML = appHistory.map((item, i) => {
+            let desc = [];
+            if(item.billItems.length > 0) desc.push(`🧾 Est: ${item.billItems.length}`);
+            if(item.urdBillItems.length > 0) desc.push(`⚖️ URD: ${item.urdBillItems.length}`);
+
+            let finalAmt = item.saleTotal - item.urdTotal;
+
+            return `
+            <div class="result history-item" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                <div>
+                    <div style="font-size:11px; color:#666;">${item.date}</div>
+                    <div style="font-weight:bold; font-size:13px; margin-top:4px; color:#9B8AD9;">
+                        ${desc.join(' | ')}
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:bold; color:darkred; font-size:15px;">₹${Math.abs(finalAmt).toFixed(2)}</div>
+                    <span class="history-delete-btn" data-index="${i}" style="color:#E53935; display:inline-block; margin-top:6px; cursor:pointer; font-size:12px; font-weight:bold; padding:4px 8px; background:#FFF; border:1px solid #E53935; border-radius:4px;">Delete</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Secure Event Delegation for History List (Fixes click blocks)
+    document.getElementById('historyList').addEventListener('click', (e) => {
+        // 1. Did they click a delete button?
+        const deleteBtn = e.target.closest('.history-delete-btn');
+        if (deleteBtn) {
+            e.stopPropagation();
+            const index = parseInt(deleteBtn.getAttribute('data-index'));
+            customConfirm("Are you sure you want to delete this saved bill?", () => {
+                appHistory.splice(index, 1);
+                localStorage.setItem('appHistory', JSON.stringify(appHistory));
+                renderHistory();
+            });
+            return;
+        }
+
+        // 2. Did they click an item to load it?
+        const itemBox = e.target.closest('.history-item');
+        if (itemBox) {
+            const index = parseInt(itemBox.getAttribute('data-index'));
+            const record = appHistory[index];
+
+            billItems = JSON.parse(JSON.stringify(record.billItems || []));
+            urdBillItems = JSON.parse(JSON.stringify(record.urdBillItems || []));
+
+            renderBillPanel();
+            renderUrdBillPanel();
+            switchPage(navSale, pageSale); // Auto-jump to Estimate view
+        }
+    });
+
+    document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+        if(appHistory.length === 0) return;
+        customConfirm("Delete ALL saved history? This cannot be undone.", () => {
+            appHistory = [];
+            localStorage.removeItem('appHistory');
+            renderHistory();
+        });
+    });
+
+
+    // --- ROBUST SHARING LOGIC ---
+
+    async function handleTextShare(shareText, title) {
+        try {
+            if (navigator.share) { await navigator.share({ title: title, text: shareText }); }
+            else { throw new Error("Share API not supported"); }
+        } catch (error) {
+            navigator.clipboard.writeText(shareText);
+            customAlert("Copied to clipboard! You can now paste this directly into WhatsApp.");
+        }
+    }
+
+    document.getElementById('shareBillBtn').addEventListener('click', () => {
+        if (billItems.length === 0) return;
+        let shareText = "🧾 *Estimate Quotation*\n------------------------\n";
+        billItems.forEach((item, index) => {
+            const itemName = item.type === 'silver' ? `Silver ${index + 1}` : `${item.type}K ${index + 1}`;
+            shareText += `*${itemName}*\nRate: ₹${item.rate}/g | Wt: ${item.weight}g | Mk: ${item.make} | St: ₹${item.stone}\nTotal: ₹${item.total.toFixed(0)}\n------------------------\n`;
+        });
+
+        let goldWt = document.getElementById('gtGoldWt').innerText;
+        let slvWt = document.getElementById('gtSilverWt').innerText;
+
+        if (parseFloat(goldWt) > 0) shareText += `\n🥇 *Gold Total Wt: ${goldWt}g*`;
+        if (parseFloat(slvWt) > 0) shareText += `\n🥈 *Silver Total Wt: ${slvWt}g*`;
+        shareText += `\n💰 *Grand Total: ₹${saleGrandTotalNum.toFixed(2)}*\n\nThank you for visiting!`;
+
+        handleTextShare(shareText, 'Estimate Quotation');
+    });
+
+    document.getElementById('shareUrdBtn').addEventListener('click', () => {
+        if (urdBillItems.length === 0) return;
+        let shareText = "⚖️ *Old Metal (URD) Receipt*\n------------------------\n";
+        urdBillItems.forEach((item, index) => {
+            const itemName = item.type === 'silver' ? `Slv Item ${index + 1}` : `Gld Item ${index + 1}`;
+            shareText += `*${itemName}* | GWt: ${item.gross}g | LWt: ${item.less}g | Net: ${item.netWt.toFixed(2)}g\nFine: ${item.fine.toFixed(2)}g | Purity: ${item.pct}% | Value: ₹${item.total.toFixed(0)}\n------------------------\n`;
+        });
+
+        shareText += `\n⚖️ *Totals:* GWt: ${document.getElementById('urdTotalGross').innerText}g | LWt: ${document.getElementById('urdTotalLess').innerText}g | Net: ${document.getElementById('urdTotalNet').innerText}g | Fine: ${document.getElementById('urdTotalFine').innerText}g\n`;
+
+        let goldWt = document.getElementById('urdGoldWt').innerText;
+        let slvWt = document.getElementById('urdSilverWt').innerText;
+
+        if (parseFloat(goldWt) > 0) shareText += `\n🥇 *Gold Val Wt: ${goldWt}g*`;
+        if (parseFloat(slvWt) > 0) shareText += `\n🥈 *Silver Val Wt: ${slvWt}g*`;
+        shareText += `\n💰 *URD Total: ₹${urdGrandTotalNum.toFixed(2)}*\n`;
+
+        if (!document.getElementById('settlementBox').classList.contains('hide')) {
+            const finalDiff = saleGrandTotalNum - urdGrandTotalNum;
+            shareText += `\n🧾 Estimate Total: ₹${saleGrandTotalNum.toFixed(2)}`;
+            shareText += `\n📉 Less Old Metal: -₹${urdGrandTotalNum.toFixed(2)}`;
+            shareText += `\n\n📌 *Final Settlement: ₹${Math.abs(finalDiff).toFixed(2)}*`;
+            if(finalDiff > 0) shareText += " (Customer Pays)\n";
+            else if (finalDiff < 0) shareText += " (Shop Pays Customer)\n";
+            else shareText += " (Fully Settled)\n";
+        }
+        shareText += "\nThank you for visiting!";
+        handleTextShare(shareText, 'URD Estimate');
+    });
+
+    // 2. A5 Image Generation Logic
+    let currentImageFilename = "Quotation.png";
+
+    function closeImageModal() { document.getElementById('imageModal').classList.remove('show'); }
+
+    async function generateA5Image(type) {
+        const a5Paper = document.getElementById('a5-paper');
+        const thead = document.getElementById('a5-table-head');
+        const tbody = document.getElementById('a5-table-body');
+        const totalsArea = document.getElementById('a5-totals-area');
+        const settlementArea = document.getElementById('a5-settlement-area');
+
+        const dateStr = new Date().toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+        document.getElementById('a5-doc-date').innerText = "Date: " + dateStr;
+
+        tbody.innerHTML = ''; totalsArea.innerHTML = ''; settlementArea.innerHTML = '';
+
+        if (type === 'sale') {
+            currentImageFilename = "Estimate_Quotation.png";
+            document.getElementById('a5-doc-title').innerText = "Estimate Quotation";
+            thead.innerHTML = `<th>Item</th><th>Rate</th><th>Wt</th><th>Mk</th><th>St</th><th class="right">Total</th>`;
+
+            billItems.forEach((item, index) => {
+                const name = item.type === 'silver' ? `Silver ${index+1}` : `${item.type}K ${index+1}`;
+                tbody.innerHTML += `<tr><td>${name}</td><td>₹${item.rate}</td><td>${item.weight}g</td><td>${item.make}</td><td>₹${item.stone}</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
+            });
+
+            totalsArea.innerHTML = `
+                <div class="a5-row"><span>Gold Total (${document.getElementById('gtGoldWt').innerText}g):</span><span>₹${document.getElementById('gtGoldVal').innerText}</span></div>
+            `;
+            if (parseFloat(document.getElementById('gtSilverWt').innerText) > 0) {
+                totalsArea.innerHTML += `<div class="a5-row" style="color:#607D8B;"><span>Silver Total (${document.getElementById('gtSilverWt').innerText}g):</span><span>₹${document.getElementById('gtSilverVal').innerText}</span></div>`;
+            }
+            totalsArea.innerHTML += `<div class="a5-row a5-grand"><span>Grand Total:</span><span>₹${saleGrandTotalNum.toFixed(2)}</span></div>`;
+        }
+        else if (type === 'urd') {
+            currentImageFilename = "URD_Receipt.png";
+            document.getElementById('a5-doc-title').innerText = "Old Metal (URD) Receipt";
+            thead.innerHTML = `<th>Item</th><th>GWt</th><th>LWt</th><th>Net</th><th>Fine</th><th>%</th><th class="right">Total</th>`;
+
+            urdBillItems.forEach((item, index) => {
+                const name = item.type === 'silver' ? `Slv URD ${index+1}` : `Gld URD ${index+1}`;
+                tbody.innerHTML += `<tr><td>${name}</td><td>${item.gross.toFixed(2)}g</td><td>${item.less.toFixed(2)}g</td><td>${item.netWt.toFixed(2)}g</td><td>${item.fine.toFixed(2)}g</td><td>${item.pct}%</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
+            });
+
+            totalsArea.innerHTML = `
+                <div class="a5-row" style="color:#666; font-size:14px; font-weight:bold; justify-content:space-between; border-bottom:1px solid #ccc; padding-bottom:10px; margin-bottom:10px;">
+                    <span>Gross: ${document.getElementById('urdTotalGross').innerText}g</span>
+                    <span>Less: ${document.getElementById('urdTotalLess').innerText}g</span>
+                    <span>Net: ${document.getElementById('urdTotalNet').innerText}g</span>
+                    <span>Fine: ${document.getElementById('urdTotalFine').innerText}g</span>
+                </div>
+                <div class="a5-row"><span>Gold URD Value (${document.getElementById('urdGoldWt').innerText}g):</span><span>₹${document.getElementById('urdGoldVal').innerText}</span></div>
+            `;
+            if (parseFloat(document.getElementById('urdSilverWt').innerText) > 0) {
+                totalsArea.innerHTML += `<div class="a5-row" style="color:#607D8B;"><span>Silver URD Value (${document.getElementById('urdSilverWt').innerText}g):</span><span>₹${document.getElementById('urdSilverVal').innerText}</span></div>`;
+            }
+            totalsArea.innerHTML += `<div class="a5-row a5-grand" style="color:#4CAF50;"><span>URD Total:</span><span>₹${urdGrandTotalNum.toFixed(2)}</span></div>`;
+
+            if (!document.getElementById('settlementBox').classList.contains('hide')) {
+                const finalDiff = saleGrandTotalNum - urdGrandTotalNum;
+                let status = finalDiff > 0 ? "(Customer Pays)" : (finalDiff < 0 ? "(Shop Pays)" : "");
+                settlementArea.innerHTML = `
+                    <div class="a5-settlement">
+                        <div class="a5-row"><span>Estimate Total:</span><span>₹${saleGrandTotalNum.toFixed(2)}</span></div>
+                        <div class="a5-row" style="color:#E53935;"><span>Less Old Metal:</span><span>-₹${urdGrandTotalNum.toFixed(2)}</span></div>
+                        <div class="a5-row a5-grand" style="color:#9B8AD9;"><span>Final Amount:</span><span>₹${Math.abs(finalDiff).toFixed(2)} ${status}</span></div>
+                    </div>`;
+            }
+        }
+
+        try {
+            const canvas = await html2canvas(a5Paper, { scale: 2 });
+            const imgData = canvas.toDataURL("image/png");
+
+            document.getElementById('generatedImageResult').src = imgData;
+            document.getElementById('imageModal').classList.add('show');
+
+        } catch (e) {
+            customAlert("Could not generate image.");
+        }
+    }
+
+    document.getElementById('imageBillBtn').addEventListener('click', () => { if(billItems.length > 0) generateA5Image('sale'); });
+    document.getElementById('imageUrdBtn').addEventListener('click', () => { if(urdBillItems.length > 0) generateA5Image('urd'); });
+
+    document.getElementById('modalShareActionBtn').addEventListener('click', () => {
+        const imgEl = document.getElementById('generatedImageResult');
+        const dataUrl = imgEl.src;
+
+        if (window.AndroidBridge) { window.AndroidBridge.shareImage(dataUrl); }
+        else {
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = currentImageFilename;
+            a.click();
+        }
+    });
+
+    // --- SETTLEMENT LOGIC ---
+    function calculateSettlement() {
+        document.getElementById('settlementBox').classList.remove('hide');
+
+        document.getElementById('setSaleTotal').innerText = `₹${saleGrandTotalNum.toFixed(2)}`;
+        document.getElementById('setUrdTotal').innerText = `- ₹${urdGrandTotalNum.toFixed(2)}`;
+
+        const finalDiff = saleGrandTotalNum - urdGrandTotalNum;
+        document.getElementById('setFinalAmount').innerText = `₹${Math.abs(finalDiff).toFixed(2)}`;
+
+        const statusEl = document.getElementById('setPayStatus');
+        if(finalDiff > 0) {
+            statusEl.innerText = "(Customer Pays)";
+            statusEl.style.color = "#E53935";
+        } else if (finalDiff < 0) {
+            statusEl.innerText = "(Shop Pays Customer)";
+            statusEl.style.color = "#4CAF50";
+        } else {
+            statusEl.innerText = "(Fully Settled)";
+            statusEl.style.color = "#9B8AD9";
+        }
+    }
+
+    document.getElementById('putSaleBtn').addEventListener('click', calculateSettlement);
+
+    // --- SETUP LISTENERS ---
+    window.addEventListener('DOMContentLoaded', () => {
+        loadSettings();
+
+        const allRateInputs = ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting', 'silverRateInput'];
+        allRateInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', (e) => {
+                    if (id === 'silverRateInput') document.getElementById('silverRateSetting').value = e.target.value;
+                    if (id === 'silverRateSetting') document.getElementById('silverRateInput').value = e.target.value;
+
+                    saveAllRates();
+                    updateSaleBoxRates();
+                    calculateGold();
+
+                    if(id === 'rate24' || id === 'urdDiff' || id === 'silverRateSetting' || id === 'silverRateInput') {
+                        updateUrdRateSystem();
+                    }
+                });
+            }
+        });
+
+        document.getElementById('urdRate').addEventListener('input', function() {
+            if (document.getElementById('urdMetalType').value === 'gold') {
+                localStorage.setItem('lastUrdGoldRate', this.value);
+            }
+            calculateURD();
+        });
+
+        if(document.getElementById('urdMetalType').value === 'gold') {
+            document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate();
+        } else {
+            document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value;
+        }
+
+        document.getElementById('makingType').addEventListener('change', function() {
+            document.getElementById('makeLabelText').innerText = this.value === 'percent' ? 'Make %:' : (this.value === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
+            calculateGold();
+        });
+        document.getElementById('calcButton').addEventListener('click', calculateGold);
+
+        ['urdWt', 'urdLessWt', 'urdPct'].forEach(id => { document.getElementById(id).addEventListener('input', calculateURD); });
+        document.getElementById('calcUrdBtn').addEventListener('click', calculateURD);
+
+        ['goldWeight','makingValue','stoneCharge'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateGold);
+        });
+
+        // Initialize UI
+        updateSaleBoxRates();
+        calculateGold();
+        calculateURD();
+        updateRateBoard();
+    });
+</script>
+</body>
+</html>
