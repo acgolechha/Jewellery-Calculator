@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gold_bar_icon.png/120px-Gold_bar_icon.png">
+    
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -82,6 +83,7 @@
             width: 100%; padding: 8px; margin-top: 4px; background: #FFFFFF;
             color: #2F2F2F; border: 1px solid #E8E5F4; border-radius: 8px;
             box-sizing: border-box; -webkit-user-select: auto; user-select: auto;
+            font-size: 16px; /* THIS STOPS APPLE TEXT BOX ZOOMING */
         }
         .input-row { display: flex; gap: 15px; margin-top: 10px; justify-content: space-between; }
         .input-row > div { flex: 1; }
@@ -166,7 +168,7 @@
         .modal-btn-container { display: flex; gap: 15px; width: 90%; max-width: 400px; margin-top: 20px; }
         .modal-btn-container button { margin-top: 0 !important; flex: 1; font-size: 14px; padding: 12px; }
 
-        /* CUSTOM DIALOG (REPLACES NATIVE ALERT/CONFIRM) */
+        /* CUSTOM DIALOG */
         .custom-dialog-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5000; justify-content: center; align-items: center; }
         .custom-dialog-overlay.show { display: flex; animation: fadeIn 0.2s ease; }
         .custom-dialog { background: #FFFFFF; padding: 20px; border-radius: 12px; width: 80%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -404,7 +406,7 @@
                 <div id="urdItemsList"></div>
 
                 <div class="grand-total-amount">
-
+                    
                     <div class="total-row" style="color:#666; font-size:11px; justify-content:space-between; border-bottom:1px solid #E8E5F4; padding-bottom:6px; margin-bottom:6px;">
                         <span><b>GWt:</b> <span id="urdTotalGross">0.00</span>g</span>
                         <span><b>LWt:</b> <span id="urdTotalLess">0.00</span>g</span>
@@ -457,7 +459,7 @@
     <div id="pageRates" class="calculator page">
         <h3 style="color:#9B8AD9; text-align:center; margin-top:0; border-bottom:1px solid #E8E5F4; padding-bottom:10px;">Live Rate Board</h3>
         <div class="result" id="rateBoardContent" style="padding: 15px; margin-top: 15px;">
-        </div>
+            </div>
     </div>
 
     <div id="pageHistory" class="calculator page">
@@ -466,7 +468,7 @@
             👆 Tap a saved bill below to reload its items AND restore the exact gold rates from that day!
         </div>
         <div id="historyList" style="margin-top:15px;">
-        </div>
+            </div>
         <button id="clearHistoryBtn" type="button" class="clear-btn" style="margin-top: 15px;">🗑️ Clear All History</button>
     </div>
 
@@ -484,7 +486,7 @@
         document.getElementById('customDialogBtns').innerHTML = `<button class="custom-dialog-btn btn-ok" onclick="closeCustomDialog()">OK</button>`;
         document.getElementById('customDialogOverlay').classList.add('show');
     }
-
+    
     function customConfirm(msg, onConfirm) {
         document.getElementById('customDialogText').innerText = msg;
         document.getElementById('customDialogBtns').innerHTML = `
@@ -497,7 +499,7 @@
             onConfirm();
         };
     }
-
+    
     window.closeCustomDialog = function() {
         document.getElementById('customDialogOverlay').classList.remove('show');
     };
@@ -518,7 +520,7 @@
         if (!isPulling) return;
         const pCurrentY = e.touches[0].clientY;
         const pull = pCurrentY - pStartY;
-
+        
         if (pull > 0 && window.scrollY <= 0) {
             ptrIndicator.style.top = Math.min(pull - 40, 20) + 'px';
             ptrIndicator.style.transform = `translateX(-50%) rotate(${pull}deg)`;
@@ -530,10 +532,10 @@
         const pCurrentY = e.changedTouches[0].clientY;
         const pull = pCurrentY - pStartY;
         isPulling = false;
-
+        
         ptrIndicator.style.top = '-50px';
         ptrIndicator.style.transform = `translateX(-50%) rotate(0deg)`;
-
+        
         if (pull > 150 && window.scrollY <= 0) {
             triggerSoftRefresh();
         }
@@ -545,20 +547,20 @@
             urdBillItems = [];
             saleGrandTotalNum = 0;
             urdGrandTotalNum = 0;
-
+            
             document.getElementById('goldWeight').value = "0";
             document.getElementById('stoneCharge').value = "0";
             document.getElementById('makingValue').value = "10";
-
+            
             document.getElementById('urdWt').value = "0";
             document.getElementById('urdLessWt').value = "0";
             document.getElementById('urdPct').value = "80";
-
+            
             renderBillPanel();
             renderUrdBillPanel();
             calculateGold();
             calculateURD();
-
+            
             document.getElementById('settlementBox').classList.add('hide');
             switchPage(navSale, pageSale);
         });
@@ -670,7 +672,7 @@
         document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(btn => {
             const val = btn.getAttribute('data-val');
             const label = val === 'silver' ? 'Sil' : val + 'K';
-
+            
             if (val === activeVal) {
                 btn.innerHTML = `${label}<br><span style="font-size:10px; font-weight:normal; color:#FFF;">₹${rates[val]}</span>`;
             } else {
@@ -682,31 +684,29 @@
     function updateSaleMetalUI(val) {
         const previousMetal = document.getElementById('metalType').value;
         document.getElementById('metalType').value = val;
-
+        
         document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(b => {
             b.classList.toggle('active', b.getAttribute('data-val') === val);
         });
-
+        
         const box = document.getElementById("silverRateBox");
         if(val === "silver") {
             box.style.display = "block";
             document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
-
-            // SMART TOGGLE: Set Silver to ₹/gm by default
+            
             document.getElementById('makingType').value = 'gram';
             document.getElementById('makeLabelText').innerText = 'Make ₹/gm:';
-
-        } else {
-            box.style.display = "none";
-
-            // SMART TOGGLE: Revert to % if switching back from Silver to Gold
+            
+        } else { 
+            box.style.display = "none"; 
+            
             if (previousMetal === 'silver') {
                 document.getElementById('makingType').value = 'percent';
                 document.getElementById('makeLabelText').innerText = 'Make %:';
             }
         }
-
-        updateSaleBoxRates();
+        
+        updateSaleBoxRates(); 
         calculateGold();
     }
 
@@ -719,11 +719,11 @@
         document.querySelectorAll('#urdMetalSelector .metal-btn').forEach(b => {
             b.classList.toggle('active', b.getAttribute('data-val') === val);
         });
-
-        if(val === 'silver') {
-            document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value;
-        } else {
-            document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate();
+        
+        if(val === 'silver') { 
+            document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value; 
+        } else { 
+            document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate(); 
         }
         calculateURD();
     }
@@ -841,12 +841,12 @@
                 total: currentFinalTotal
             });
             renderBillPanel();
-
+            
             document.getElementById('goldWeight').value = "0";
             document.getElementById('stoneCharge').value = "0";
             document.getElementById('makingValue').value = "10";
             calculateGold();
-
+            
         } else { customAlert("Please enter a weight before adding to the bill."); }
     });
 
@@ -863,7 +863,7 @@
 
             document.getElementById('makingType').value = item.makeType;
             document.getElementById('makeLabelText').innerText = item.makeType === 'percent' ? 'Make %:' : (item.makeType === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
-
+            
             document.getElementById('goldWeight').value = item.weight;
             document.getElementById('makingValue').value = item.make;
             document.getElementById('stoneCharge').value = item.stone;
@@ -896,7 +896,7 @@
         const wt = parseFloat(document.getElementById('urdWt').value) || 0;
         const lessWt = parseFloat(document.getElementById('urdLessWt').value) || 0;
         const pct = parseFloat(document.getElementById('urdPct').value) || 0;
-        const rate = parseFloat(document.getElementById('urdRate').value) || 0;
+        const rate = parseFloat(document.getElementById('urdRate').value) || 0; 
 
         const netWt = wt - lessWt;
         const fineWt = netWt * (pct / 100);
@@ -988,14 +988,14 @@
 
             urdBillItems.push({ type: metal, netWt: netWt, gross: wt, less: lessWt, pct: pct, fine: fineWt, total: currentUrdTotal });
             renderUrdBillPanel();
-
+            
             document.getElementById('urdWt').value = "0";
             document.getElementById('urdLessWt').value = "0";
             document.getElementById('urdPct').value = "80";
-
+            
             if(metal === 'silver') { document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value; }
-            else {
-                document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate();
+            else { 
+                document.getElementById('urdRate').value = localStorage.getItem('lastUrdGoldRate') || calculateDefaultUrdRate(); 
             }
             calculateURD();
         } else { customAlert("Please enter Old Metal weight before adding."); }
@@ -1029,21 +1029,21 @@
     let appHistory = JSON.parse(localStorage.getItem('appHistory')) || [];
 
     function saveCurrentTransaction() {
-        if (billItems.length === 0 && urdBillItems.length === 0) {
-            customAlert("Nothing to save! Add some items first.");
-            return;
+        if (billItems.length === 0 && urdBillItems.length === 0) { 
+            customAlert("Nothing to save! Add some items first."); 
+            return; 
         }
 
         const dateStr = new Date().toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
-
-        let record = {
-            id: Date.now(),
-            date: dateStr,
-            billItems: JSON.parse(JSON.stringify(billItems)),
-            urdBillItems: JSON.parse(JSON.stringify(urdBillItems)),
+        
+        let record = { 
+            id: Date.now(), 
+            date: dateStr, 
+            billItems: JSON.parse(JSON.stringify(billItems)), 
+            urdBillItems: JSON.parse(JSON.stringify(urdBillItems)), 
             saleTotal: saleGrandTotalNum,
             urdTotal: urdGrandTotalNum,
-
+            
             savedRates: {
                 rate24: document.getElementById('rate24').value,
                 silverRateSetting: document.getElementById('silverRateSetting').value,
@@ -1059,7 +1059,7 @@
         customAlert('✅ Complete transaction saved to History!');
         renderHistory();
     }
-
+    
     document.getElementById('saveBillBtn').addEventListener('click', saveCurrentTransaction);
     document.getElementById('saveUrdBtn').addEventListener('click', saveCurrentTransaction);
 
@@ -1069,14 +1069,14 @@
             list.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No saved bills yet. Click "Save" on a bill to store it here.</div>';
             return;
         }
-
+        
         list.innerHTML = appHistory.map((item, i) => {
             let desc = [];
             if(item.billItems.length > 0) desc.push(`🧾 Est: ${item.billItems.length}`);
             if(item.urdBillItems.length > 0) desc.push(`⚖️ URD: ${item.urdBillItems.length}`);
-
+            
             let finalAmt = item.saleTotal - item.urdTotal;
-
+            
             return `
             <div class="result history-item" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
                 <div>
@@ -1096,7 +1096,7 @@
     document.getElementById('historyList').addEventListener('click', (e) => {
         const deleteBtn = e.target.closest('.history-delete-btn');
         if (deleteBtn) {
-            e.stopPropagation();
+            e.stopPropagation(); 
             const index = parseInt(deleteBtn.getAttribute('data-index'));
             customConfirm("Are you sure you want to delete this saved bill?", () => {
                 appHistory.splice(index, 1);
@@ -1110,7 +1110,7 @@
         if (itemBox) {
             const index = parseInt(itemBox.getAttribute('data-index'));
             const record = appHistory[index];
-
+            
             if (record.savedRates) {
                 document.getElementById('rate24').value = record.savedRates.rate24;
                 document.getElementById('silverRateSetting').value = record.savedRates.silverRateSetting;
@@ -1119,7 +1119,7 @@
                 document.getElementById('pct20').value = record.savedRates.pct20;
                 document.getElementById('pct18').value = record.savedRates.pct18;
                 document.getElementById('silverRateInput').value = record.savedRates.silverRateSetting;
-
+                
                 saveAllRates();
                 updateSaleBoxRates();
                 updateRateBoard();
@@ -1128,12 +1128,12 @@
 
             billItems = JSON.parse(JSON.stringify(record.billItems || []));
             urdBillItems = JSON.parse(JSON.stringify(record.urdBillItems || []));
-
+            
             renderBillPanel();
             renderUrdBillPanel();
             calculateGold();
             calculateURD();
-            switchPage(navSale, pageSale);
+            switchPage(navSale, pageSale); 
         }
     });
 
@@ -1297,7 +1297,7 @@
         const imgEl = document.getElementById('generatedImageResult');
         const dataUrl = imgEl.src;
 
-        if (window.AndroidBridge) { window.AndroidBridge.shareImage(dataUrl); }
+        if (window.AndroidBridge) { window.AndroidBridge.shareImage(dataUrl); } 
         else {
             const a = document.createElement('a');
             a.href = dataUrl;
@@ -1342,11 +1342,11 @@
                 el.addEventListener('input', (e) => {
                     if (id === 'silverRateInput') document.getElementById('silverRateSetting').value = e.target.value;
                     if (id === 'silverRateSetting') document.getElementById('silverRateInput').value = e.target.value;
-
-                    saveAllRates();
-                    updateSaleBoxRates();
+                    
+                    saveAllRates(); 
+                    updateSaleBoxRates(); 
                     calculateGold();
-
+                    
                     if(id === 'rate24' || id === 'urdDiff' || id === 'silverRateSetting' || id === 'silverRateInput') {
                         updateUrdRateSystem();
                     }
@@ -1381,9 +1381,9 @@
         });
 
         // Initialize UI
-        updateSaleBoxRates();
-        calculateGold();
-        calculateURD();
+        updateSaleBoxRates(); 
+        calculateGold(); 
+        calculateURD(); 
         updateRateBoard();
     });
 </script>
