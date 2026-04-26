@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
     
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -160,7 +160,6 @@
 
         footer { background: transparent; text-align: center; padding: 10px; margin-top: 5px; }
         .footer-title { color: #9B8AD9; font-size: 14px; font-weight: bold; }
-        .footer-author { color: #666666; font-size: 11px; }
 
         /* IMAGE MODAL STYLES */
         .img-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
@@ -245,15 +244,15 @@
         <button id="closeSettings" type="button">✕</button>
     </div>
     <div class="side-panel-content">
-        <label>💰 24K Rate: <input type="number" id="rate24" value="16880"></label>
-        <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="90"></label>
+        <label>💰 24K Rate: <input type="number" id="rate24" value="15300"></label>
+        <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="260"></label>
 
         <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Settings ▾</button>
         <div id="advancedMenu" class="advanced-menu">
             <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300"></label>
-            <label>22K Rate (₹ or %): <input type="text" id="pct22" value="93%"></label>
-            <label>20K Rate (₹ or %): <input type="text" id="pct20" value="85%"></label>
-            <label>18K Rate (₹ or %): <input type="text" id="pct18" value="80%"></label>
+            <label>22K Rate (₹ or %): <input type="text" id="pct22" value="94%"></label>
+            <label>20K Rate (₹ or %): <input type="text" id="pct20" value="88%"></label>
+            <label>18K Rate (₹ or %): <input type="text" id="pct18" value="83%"></label>
             <label>GST %: <input type="number" id="gstPct" value="3"></label>
         </div>
         <button id="closeSettingsBtn" type="button" style="margin-top:15px;">Done</button>
@@ -297,18 +296,19 @@
                 <div><label>💎 St. ₹: <input type="number" id="stoneCharge" value="0"></label></div>
             </div>
 
-            <div class="input-row">
-                <div>
-                    <label>MK TY:
-                        <select id="makingType">
-                            <option value="percent">%</option>
-                            <option value="gram">₹/gm</option>
-                            <option value="piece">₹/piece</option>
-                        </select>
-                    </label>
+            <div class="input-row" style="align-items: flex-end;">
+                <div style="flex: 1.3;">
+                    <label style="margin-bottom:4px;">MK TY:</label>
+                    <div class="metal-selector" id="makingTypeSelector" style="margin: 0;">
+                        <div class="metal-btn active" data-value="percent" style="padding: 6px 0;">%</div>
+                        <div class="metal-btn" data-value="gram" style="padding: 6px 0;">₹/g</div>
+                        <div class="metal-btn" data-value="piece" style="padding: 6px 0;">₹/pc</div>
+                    </div>
+                    <input type="hidden" id="makingType" value="percent">
                 </div>
-                <div>
-                    <label id="makingLabel"><span id="makeLabelText">Make %:</span> <input type="number" id="makingValue" value="10"></label>
+                <div style="flex: 0.7;">
+                    <label id="makingLabel" style="margin-bottom:4px;"><span id="makeLabelText">Make %:</span></label>
+                    <input type="number" id="makingValue" value="10" style="margin-top:0;">
                 </div>
             </div>
 
@@ -660,7 +660,7 @@
         `;
     }
 
-    // --- DYNAMIC METAL BOX RATE INJECTION ---
+    // --- DYNAMIC METAL BOX RATE INJECTION (LARGER & VISIBLE PRICES) ---
     function updateSaleBoxRates() {
         const rates = {
             '24': computeKaratRate(24),
@@ -677,9 +677,11 @@
             const label = val === 'silver' ? 'Sil' : val + 'K';
             
             if (val === activeVal) {
-                btn.innerHTML = `${label}<br><span style="font-size:10px; font-weight:normal; color:#FFF;">₹${rates[val]}</span>`;
+                // Large, bold, white text for the active metal
+                btn.innerHTML = `${label}<br><span style="font-size:13px; font-weight:bold; color:#FFF; display:block; margin-top:2px;">₹${rates[val]}</span>`;
             } else {
-                btn.innerHTML = `${label}<br><span style="font-size:10px; visibility:hidden;">₹${rates[val]}</span>`;
+                // Smaller, muted text for inactive metals so they are still readable
+                btn.innerHTML = `${label}<br><span style="font-size:11px; font-weight:normal; color:#999; display:block; margin-top:2px;">₹${rates[val]}</span>`;
             }
         });
     }
@@ -697,15 +699,23 @@
             box.style.display = "block";
             document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
             
+            // SMART TOGGLE: Switch to ₹/gm for Silver
             document.getElementById('makingType').value = 'gram';
             document.getElementById('makeLabelText').innerText = 'Make ₹/gm:';
+            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === 'gram');
+            });
             
         } else { 
             box.style.display = "none"; 
             
+            // SMART TOGGLE: Switch back to % if coming from Silver
             if (previousMetal === 'silver') {
                 document.getElementById('makingType').value = 'percent';
                 document.getElementById('makeLabelText').innerText = 'Make %:';
+                document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-value') === 'percent');
+                });
             }
         }
         
@@ -866,6 +876,11 @@
 
             document.getElementById('makingType').value = item.makeType;
             document.getElementById('makeLabelText').innerText = item.makeType === 'percent' ? 'Make %:' : (item.makeType === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
+            
+            // Sync boxes to match edited item
+            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === item.makeType);
+            });
             
             document.getElementById('goldWeight').value = item.weight;
             document.getElementById('makingValue').value = item.make;
@@ -1370,10 +1385,18 @@
             document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value;
         }
 
-        document.getElementById('makingType').addEventListener('change', function() {
-            document.getElementById('makeLabelText').innerText = this.value === 'percent' ? 'Make %:' : (this.value === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
-            calculateGold();
+        // Setup Making Type Box Click Listeners
+        document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const val = this.getAttribute('data-value');
+                document.getElementById('makingType').value = val;
+                document.getElementById('makeLabelText').innerText = val === 'percent' ? 'Make %:' : (val === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
+                document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                calculateGold();
+            });
         });
+
         document.getElementById('calcButton').addEventListener('click', calculateGold);
 
         ['urdWt', 'urdLessWt', 'urdPct'].forEach(id => { document.getElementById(id).addEventListener('input', calculateURD); });
