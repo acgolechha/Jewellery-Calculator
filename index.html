@@ -11,10 +11,22 @@
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* SCROLL LOCK APPLIED HERE */
         body {
             font-family: Arial, sans-serif; margin: 5px; background: #F6F4FB; color: #2F2F2F;
-            -webkit-user-select: none; user-select: none; overflow-x: hidden;
-            max-width: 600px; margin: 5px auto; overscroll-behavior-y: contain;
+            -webkit-user-select: none; user-select: none; 
+            overflow: hidden; /* Prevent all page scrolling */
+            max-width: 600px; margin: 5px auto; 
+            height: 100vh; /* Lock height */
+            display: flex; flex-direction: column;
+        }
+
+        /* Container to allow scrolling only inside the page content */
+        .calculator-container { 
+            display: flex; gap: 20px; flex-wrap: wrap; 
+            overflow-y: auto; /* Allow scrolling inside the pages */
+            flex: 1; /* Take remaining space */
+            padding-bottom: 20px;
         }
 
         /* PULL TO REFRESH INDICATOR */
@@ -32,6 +44,7 @@
             border: 1px solid #E8E5F4; padding: 3px; margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
             gap: 2px;
+            flex-shrink: 0; /* Prevent nav from shrinking */
         }
         .nav-btn {
             background: transparent; color: #666666; font-size: 11px;
@@ -43,7 +56,7 @@
         #toggleSettings:active { background: #F6F4FB; }
 
         /* PAGE SWITCHING STYLES */
-        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page { display: none; animation: fadeIn 0.3s ease; width: 100%;}
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -76,7 +89,7 @@
         .overlay.show { display: block; }
 
         /* UI STYLES */
-        .calculator-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        
         .calculator { flex: 1; background: #FFFFFF; padding: 15px; border-radius: 12px; border: 1px solid #E8E5F4; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
         label { display: block; margin-top: 10px; font-size: 14px; }
 
@@ -84,7 +97,7 @@
             width: 100%; padding: 8px; margin-top: 4px; background: #FFFFFF;
             color: #2F2F2F; border: 1px solid #E8E5F4; border-radius: 8px;
             box-sizing: border-box; -webkit-user-select: auto; user-select: auto;
-            font-size: 16px; /* THIS STOPS APPLE TEXT BOX ZOOMING */
+            font-size: 16px; 
         }
         .input-row { display: flex; gap: 15px; margin-top: 10px; justify-content: space-between; }
         .input-row > div { flex: 1; }
@@ -158,7 +171,7 @@
         select { appearance: listbox; -webkit-appearance: menulist; cursor: pointer; }
         select option { background-color: #FFFFFF; color: #2F2F2F; }
 
-        footer { background: transparent; text-align: center; padding: 10px; margin-top: 5px; }
+        footer { background: transparent; text-align: center; padding: 10px; margin-top: 5px; flex-shrink: 0;}
         .footer-title { color: #9B8AD9; font-size: 14px; font-weight: bold; }
 
         /* IMAGE MODAL STYLES */
@@ -267,7 +280,7 @@
     <button id="navHistory" class="nav-btn">📜 Hist.</button>
 </nav>
 
-<div class="calculator-container">
+<div class="calculator-container" id="mainContainer">
 
     <div id="pageSale" class="calculator page active">
         <fieldset style="border:none; padding:0; margin:0;">
@@ -278,6 +291,7 @@
                 Metal Type
             </label>
             <div class="metal-selector" id="saleMetalSelector">
+                <!-- Rates injected via JS -->
                 <div class="metal-btn active" data-val="24">24K</div>
                 <div class="metal-btn" data-val="22">22K</div>
                 <div class="metal-btn" data-val="20">20K</div>
@@ -292,10 +306,12 @@
             </label>
 
             <div class="input-row">
-                <div><label>⚖️ WT: <input type="number" id="goldWeight" value="0"></label></div>
-                <div><label>💎 St. ₹: <input type="number" id="stoneCharge" value="0"></label></div>
+                <!-- Empty values by default -->
+                <div><label>⚖️ WT: <input type="number" id="goldWeight" placeholder=""></label></div>
+                <div><label>💎 St. ₹: <input type="number" id="stoneCharge" placeholder=""></label></div>
             </div>
 
+            <!-- UPDATED MAKING TYPE BOXES -->
             <div class="input-row" style="align-items: flex-end;">
                 <div style="flex: 1.3;">
                     <label style="margin-bottom:4px;">MK TY:</label>
@@ -307,6 +323,7 @@
                     <input type="hidden" id="makingType" value="percent">
                 </div>
                 <div style="flex: 0.7;">
+                    <!-- Default making charge is 10 -->
                     <label id="makingLabel" style="margin-bottom:4px;"><span id="makeLabelText">Make %:</span></label>
                     <input type="number" id="makingValue" value="10" style="margin-top:0;">
                 </div>
@@ -376,8 +393,9 @@
             <input type="hidden" id="urdMetalType" value="gold">
 
             <div class="input-row">
-                <div><label>⚖️ Gross Wt: <input type="number" id="urdWt" value="0" step="0.001"></label></div>
-                <div><label>➖ Less Wt: <input type="number" id="urdLessWt" value="0" step="0.001"></label></div>
+                <!-- Empty defaults -->
+                <div><label>⚖️ Gross Wt: <input type="number" id="urdWt" placeholder="" step="0.001"></label></div>
+                <div><label>➖ Less Wt: <input type="number" id="urdLessWt" placeholder="" step="0.001"></label></div>
             </div>
 
             <div class="input-row">
@@ -511,26 +529,27 @@
     let pStartY = 0;
     let isPulling = false;
     const ptrIndicator = document.getElementById('ptr-indicator');
+    const mainContainer = document.getElementById('mainContainer');
 
-    document.addEventListener('touchstart', e => {
-        if (window.scrollY <= 0) {
+    mainContainer.addEventListener('touchstart', e => {
+        if (mainContainer.scrollTop <= 0) {
             pStartY = e.touches[0].clientY;
             isPulling = true;
         }
     }, {passive: true});
 
-    document.addEventListener('touchmove', e => {
+    mainContainer.addEventListener('touchmove', e => {
         if (!isPulling) return;
         const pCurrentY = e.touches[0].clientY;
         const pull = pCurrentY - pStartY;
         
-        if (pull > 0 && window.scrollY <= 0) {
+        if (pull > 0 && mainContainer.scrollTop <= 0) {
             ptrIndicator.style.top = Math.min(pull - 40, 20) + 'px';
             ptrIndicator.style.transform = `translateX(-50%) rotate(${pull}deg)`;
         }
     }, {passive: true});
 
-    document.addEventListener('touchend', e => {
+    mainContainer.addEventListener('touchend', e => {
         if (!isPulling) return;
         const pCurrentY = e.changedTouches[0].clientY;
         const pull = pCurrentY - pStartY;
@@ -539,7 +558,7 @@
         ptrIndicator.style.top = '-50px';
         ptrIndicator.style.transform = `translateX(-50%) rotate(0deg)`;
         
-        if (pull > 150 && window.scrollY <= 0) {
+        if (pull > 150 && mainContainer.scrollTop <= 0) {
             triggerSoftRefresh();
         }
     });
@@ -551,13 +570,27 @@
             saleGrandTotalNum = 0;
             urdGrandTotalNum = 0;
             
-            document.getElementById('goldWeight').value = "0";
-            document.getElementById('stoneCharge').value = "0";
+            // Empty weight and stone inputs
+            document.getElementById('goldWeight').value = "";
+            document.getElementById('stoneCharge').value = "";
             document.getElementById('makingValue').value = "10";
             
-            document.getElementById('urdWt').value = "0";
-            document.getElementById('urdLessWt').value = "0";
+            document.getElementById('urdWt').value = "";
+            document.getElementById('urdLessWt').value = "";
             document.getElementById('urdPct').value = "80";
+            
+            // Reset to Gold defaults
+            updateSaleMetalUI("24");
+            
+            // Explicitly set Making type back to percentage
+            document.getElementById('makingType').value = 'percent';
+            document.getElementById('makeLabelText').innerText = 'Make %:';
+            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === 'percent');
+            });
+            
+            // Reset Silver input back to saved setting
+            document.getElementById('silverRateInput').value = document.getElementById('silverRateSetting').value;
             
             renderBillPanel();
             renderUrdBillPanel();
@@ -584,6 +617,7 @@
         [pageSale, pageUrd, pageRates, pageHistory].forEach(page => page.classList.remove('active'));
         activeNav.classList.add('active');
         activePage.classList.add('active');
+        mainContainer.scrollTop = 0; // Scroll to top when switching pages
     }
 
     navSale.addEventListener('click', () => switchPage(navSale, pageSale));
@@ -697,7 +731,10 @@
         const box = document.getElementById("silverRateBox");
         if(val === "silver") {
             box.style.display = "block";
-            document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
+            // Do not override user input if they typed something, otherwise use setting
+            if (!document.getElementById("silverRateInput").value) {
+                document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
+            }
             
             // SMART TOGGLE: Switch to ₹/gm for Silver
             document.getElementById('makingType').value = 'gram';
@@ -855,8 +892,9 @@
             });
             renderBillPanel();
             
-            document.getElementById('goldWeight').value = "0";
-            document.getElementById('stoneCharge').value = "0";
+            // Empty weight and stone inputs
+            document.getElementById('goldWeight').value = "";
+            document.getElementById('stoneCharge').value = "";
             document.getElementById('makingValue').value = "10";
             calculateGold();
             
@@ -889,7 +927,7 @@
             billItems.splice(index, 1);
             renderBillPanel();
             calculateGold();
-            window.scrollTo(0, 0);
+            mainContainer.scrollTop = 0;
         }
     });
 
@@ -1007,8 +1045,8 @@
             urdBillItems.push({ type: metal, netWt: netWt, gross: wt, less: lessWt, pct: pct, fine: fineWt, total: currentUrdTotal });
             renderUrdBillPanel();
             
-            document.getElementById('urdWt').value = "0";
-            document.getElementById('urdLessWt').value = "0";
+            document.getElementById('urdWt').value = "";
+            document.getElementById('urdLessWt').value = "";
             document.getElementById('urdPct').value = "80";
             
             if(metal === 'silver') { document.getElementById('urdRate').value = document.getElementById('silverRateSetting').value; }
@@ -1037,7 +1075,7 @@
             urdBillItems.splice(index, 1);
             renderUrdBillPanel();
             calculateURD();
-            window.scrollTo(0, 0);
+            mainContainer.scrollTop = 0;
         }
     });
 
