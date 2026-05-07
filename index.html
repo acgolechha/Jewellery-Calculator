@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+    
+    <link rel="icon" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
     
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -60,9 +61,9 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* SIDE PANEL STYLES */
+        /* WIDER SIDE PANEL STYLES */
         .side-panel {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+            position: fixed; top: 0; left: -360px; width: 340px; height: 100%;
             background: #FFFFFF; box-shadow: 2px 0 15px rgba(0,0,0,0.15);
             z-index: 2000; transition: 0.3s ease; display: flex; flex-direction: column;
         }
@@ -89,7 +90,6 @@
         .overlay.show { display: block; }
 
         /* UI STYLES */
-        
         .calculator { flex: 1; background: #FFFFFF; padding: 15px; border-radius: 12px; border: 1px solid #E8E5F4; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
         label { display: block; margin-top: 10px; font-size: 14px; }
 
@@ -97,7 +97,7 @@
             width: 100%; padding: 8px; margin-top: 4px; background: #FFFFFF;
             color: #2F2F2F; border: 1px solid #E8E5F4; border-radius: 8px;
             box-sizing: border-box; -webkit-user-select: auto; user-select: auto;
-            font-size: 16px; 
+            font-size: 16px; /* THIS STOPS APPLE TEXT BOX ZOOMING */
         }
         .input-row { display: flex; gap: 15px; margin-top: 10px; justify-content: space-between; }
         .input-row > div { flex: 1; }
@@ -260,7 +260,47 @@
         <label>💰 24K Rate: <input type="number" id="rate24" value="15300"></label>
         <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="260"></label>
 
-        <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Settings ▾</button>
+        <div style="background:#FBFAFF; border:1px solid #E8E5F4; border-radius:8px; padding:10px; margin-top:15px; margin-bottom:5px;">
+            <div style="font-weight:bold; font-size:12px; color:#9B8AD9; margin-bottom:10px;">DEFAULT MAKING CHARGES</div>
+            
+            <div style="display:flex; gap:5px; font-size:10px; color:#666; margin-bottom:4px; font-weight:bold;">
+                <div style="width:40px;">Metal</div>
+                <div style="flex:1;">Type</div>
+                <div style="flex:1;">Value</div>
+            </div>
+
+            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">24K</div>
+                <select id="defMkType24" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
+                <input type="number" id="defMkVal24" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+            </div>
+
+            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">22K</div>
+                <select id="defMkType22" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
+                <input type="number" id="defMkVal22" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+            </div>
+
+            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">20K</div>
+                <select id="defMkType20" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
+                <input type="number" id="defMkVal20" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+            </div>
+
+            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">18K</div>
+                <select id="defMkType18" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
+                <input type="number" id="defMkVal18" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+            </div>
+
+            <div style="display:flex; gap:5px; align-items:center;">
+                <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">Sil</div>
+                <select id="defMkTypeSil" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
+                <input type="number" id="defMkValSil" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+            </div>
+        </div>
+
+        <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Rates ▾</button>
         <div id="advancedMenu" class="advanced-menu">
             <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300"></label>
             <label>22K Rate (₹ or %): <input type="text" id="pct22" value="94%"></label>
@@ -568,13 +608,12 @@
             // Empty weight and stone inputs
             document.getElementById('goldWeight').value = "";
             document.getElementById('stoneCharge').value = "";
-            document.getElementById('makingValue').value = "";
             
             document.getElementById('urdWt').value = "";
             document.getElementById('urdLessWt').value = "";
             document.getElementById('urdPct').value = "80";
             
-            // Reset to Gold defaults (24K defaults to gram now)
+            // Re-trigger defaults for 24K metal
             updateSaleMetalUI("24");
             
             // Reset Silver input back to saved setting
@@ -605,7 +644,7 @@
         [pageSale, pageUrd, pageRates, pageHistory].forEach(page => page.classList.remove('active'));
         activeNav.classList.add('active');
         activePage.classList.add('active');
-        mainContainer.scrollTop = 0; // Scroll to top when switching pages
+        mainContainer.scrollTop = 0; 
     }
 
     navSale.addEventListener('click', () => switchPage(navSale, pageSale));
@@ -632,7 +671,11 @@
     });
 
     function saveAllRates() {
-        ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting'].forEach(k => {
+        const settingsInputs = [
+            'rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting', 
+            'defMkType24', 'defMkVal24', 'defMkType22', 'defMkVal22', 'defMkType20', 'defMkVal20', 'defMkType18', 'defMkVal18', 'defMkTypeSil', 'defMkValSil'
+        ];
+        settingsInputs.forEach(k => {
             const el = document.getElementById(k);
             if(el) localStorage.setItem(k, el.value);
         });
@@ -640,29 +683,27 @@
     }
 
     function loadSettings() {
-        ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting'].forEach(k => {
-            const v = localStorage.getItem(k);
-            if (v !== null && document.getElementById(k)) document.getElementById(k).value = v;
+        // Safe Default Initialization Mapping
+        const defaultSettings = {
+            'rate24': '15300', 'urdDiff': '300', 'pct22': '94%', 'pct20': '88%', 'pct18': '83%', 'gstPct': '3', 'silverRateSetting': '260',
+            'defMkType24': 'gram', 'defMkVal24': '',
+            'defMkType22': 'percent', 'defMkVal22': '10',
+            'defMkType20': 'percent', 'defMkVal20': '10',
+            'defMkType18': 'percent', 'defMkVal18': '10',
+            'defMkTypeSil': 'gram', 'defMkValSil': ''
+        };
+
+        Object.keys(defaultSettings).forEach(k => {
+            const el = document.getElementById(k);
+            if(el) {
+                const storedVal = localStorage.getItem(k);
+                el.value = (storedVal !== null) ? storedVal : defaultSettings[k];
+            }
         });
-        if (document.getElementById('silverRateSetting').value) document.getElementById('silverRateInput').value = document.getElementById('silverRateSetting').value;
-    }
 
-    // Smart rate parser for URD Difference (Flats or Percents)
-    function parseSmartRate(base, inputValue) {
-        const str = String(inputValue).trim();
-        if (str.includes('%')) {
-            const pct = parseFloat(str.replace('%', '')) || 0;
-            return base * (pct / 100);
-        } else {
-            const flat = parseFloat(str) || 0;
-            return base - flat;
+        if (document.getElementById('silverRateSetting').value) {
+            document.getElementById('silverRateInput').value = document.getElementById('silverRateSetting').value;
         }
-    }
-
-    function calculateDefaultUrdRate() {
-        const base = parseFloat(document.getElementById('rate24').value) || 0;
-        const diffInput = document.getElementById('urdDiff').value;
-        return parseSmartRate(base, diffInput);
     }
 
     // --- NEW SMART KARAT CALCULATOR (FULL STOP = EXACT RATE) ---
@@ -679,6 +720,22 @@
             // Default: Treat as a percentage of 24K (even if % symbol is missing)
             let pct = parseFloat(str.replace('%', '')) || 0;
             return roundToTen(base * (pct / 100));
+        }
+    }
+
+    // --- NEW SMART URD CALCULATOR (FULL STOP = EXACT MINUS) ---
+    function calculateDefaultUrdRate() {
+        const base = parseFloat(document.getElementById('rate24').value) || 0;
+        const diffInput = String(document.getElementById('urdDiff').value).trim();
+        
+        if (diffInput.endsWith('.')) {
+            // Flat deduction: "500." -> Base minus 500
+            const flat = parseFloat(diffInput) || 0;
+            return Math.round(base - flat);
+        } else {
+            // Percentage deduction: "3" -> Base minus 3%
+            let pct = parseFloat(diffInput.replace('%', '')) || 0;
+            return Math.round(base - (base * (pct / 100)));
         }
     }
 
@@ -727,7 +784,6 @@
     }
 
     function updateSaleMetalUI(val) {
-        const previousMetal = document.getElementById('metalType').value;
         document.getElementById('metalType').value = val;
         
         document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(b => {
@@ -737,7 +793,6 @@
         const box = document.getElementById("silverRateBox");
         if(val === "silver") {
             box.style.display = "block";
-            // Do not override user input if they typed something, otherwise use setting
             if (!document.getElementById("silverRateInput").value) {
                 document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
             }
@@ -745,19 +800,25 @@
             box.style.display = "none"; 
         }
 
-        // SMART TOGGLE: 24K and Silver default to ₹/gm. All others default to %.
-        if (val === 'silver' || val === '24') {
-            document.getElementById('makingType').value = 'gram';
-            document.getElementById('makeLabelText').innerText = 'Make ₹/gm:';
-            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
-                b.classList.toggle('active', b.getAttribute('data-value') === 'gram');
-            });
+        // DYNAMIC DEFAULTS LOGIC 
+        const settingTypeMap = { '24': 'defMkType24', '22': 'defMkType22', '20': 'defMkType20', '18': 'defMkType18', 'silver': 'defMkTypeSil' };
+        const settingValMap = { '24': 'defMkVal24', '22': 'defMkVal22', '20': 'defMkVal20', '18': 'defMkVal18', 'silver': 'defMkValSil' };
+        
+        const defaultType = document.getElementById(settingTypeMap[val]).value;
+        const defaultVal = document.getElementById(settingValMap[val]).value;
+
+        // Apply Setting Type
+        document.getElementById('makingType').value = defaultType;
+        document.getElementById('makeLabelText').innerText = defaultType === 'percent' ? 'Make %:' : (defaultType === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
+        document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-value') === defaultType);
+        });
+
+        // Apply Setting Value (BLANK ZERO LOGIC)
+        if (defaultVal === "" || parseFloat(defaultVal) === 0) {
+            document.getElementById('makingValue').value = ""; // Show completely blank if zero/empty
         } else {
-            document.getElementById('makingType').value = 'percent';
-            document.getElementById('makeLabelText').innerText = 'Make %:';
-            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
-                b.classList.toggle('active', b.getAttribute('data-value') === 'percent');
-            });
+            document.getElementById('makingValue').value = defaultVal;
         }
         
         updateSaleBoxRates(); 
@@ -889,11 +950,10 @@
             });
             renderBillPanel();
             
-            // Empty inputs after adding
+            // Empty inputs after adding, reload defaults
             document.getElementById('goldWeight').value = "";
             document.getElementById('stoneCharge').value = "";
-            document.getElementById('makingValue').value = "";
-            calculateGold();
+            updateSaleMetalUI(document.getElementById('metalType').value); // Re-applies the default making value
             
         } else { customAlert("Please enter a weight before adding to the bill."); }
     });
@@ -1388,11 +1448,15 @@
     window.addEventListener('DOMContentLoaded', () => {
         loadSettings();
 
-        // Run UI update ONCE at boot so 24K starts on ₹/gm exactly as requested
+        // Run UI update ONCE at boot to apply default dynamic settings to active metal
         updateSaleMetalUI(document.getElementById('metalType').value);
 
-        const allRateInputs = ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting', 'silverRateInput'];
-        allRateInputs.forEach(id => {
+        const settingsInputs = [
+            'rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting', 'silverRateInput',
+            'defMkType24', 'defMkVal24', 'defMkType22', 'defMkVal22', 'defMkType20', 'defMkVal20', 'defMkType18', 'defMkVal18', 'defMkTypeSil', 'defMkValSil'
+        ];
+        
+        settingsInputs.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', (e) => {
@@ -1400,13 +1464,25 @@
                     if (id === 'silverRateSetting') document.getElementById('silverRateInput').value = e.target.value;
                     
                     saveAllRates(); 
-                    updateSaleBoxRates(); 
-                    calculateGold();
+                    
+                    // If a default changes, instantly re-apply to the current metal if it matches
+                    if (id.startsWith('defMk')) {
+                        updateSaleMetalUI(document.getElementById('metalType').value);
+                    } else {
+                        updateSaleBoxRates(); 
+                        calculateGold();
+                    }
                     
                     if(id === 'rate24' || id === 'urdDiff' || id === 'silverRateSetting' || id === 'silverRateInput') {
                         updateUrdRateSystem();
                     }
                 });
+                if(el.tagName === 'SELECT') {
+                    el.addEventListener('change', (e) => {
+                        saveAllRates();
+                        if (id.startsWith('defMk')) updateSaleMetalUI(document.getElementById('metalType').value);
+                    });
+                }
             }
         });
 
