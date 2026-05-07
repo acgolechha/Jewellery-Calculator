@@ -291,7 +291,6 @@
                 Metal Type
             </label>
             <div class="metal-selector" id="saleMetalSelector">
-                <!-- Rates injected via JS -->
                 <div class="metal-btn active" data-val="24">24K</div>
                 <div class="metal-btn" data-val="22">22K</div>
                 <div class="metal-btn" data-val="20">20K</div>
@@ -306,26 +305,23 @@
             </label>
 
             <div class="input-row">
-                <!-- Empty values by default -->
                 <div><label>⚖️ WT: <input type="number" id="goldWeight" placeholder=""></label></div>
                 <div><label>💎 St. ₹: <input type="number" id="stoneCharge" placeholder=""></label></div>
             </div>
 
-            <!-- UPDATED MAKING TYPE BOXES -->
             <div class="input-row" style="align-items: flex-end;">
                 <div style="flex: 1.3;">
                     <label style="margin-bottom:4px;">MK TY:</label>
                     <div class="metal-selector" id="makingTypeSelector" style="margin: 0;">
-                        <div class="metal-btn active" data-value="percent" style="padding: 6px 0;">%</div>
-                        <div class="metal-btn" data-value="gram" style="padding: 6px 0;">₹/g</div>
+                        <div class="metal-btn" data-value="percent" style="padding: 6px 0;">%</div>
+                        <div class="metal-btn active" data-value="gram" style="padding: 6px 0;">₹/g</div>
                         <div class="metal-btn" data-value="piece" style="padding: 6px 0;">₹/pc</div>
                     </div>
-                    <input type="hidden" id="makingType" value="percent">
+                    <input type="hidden" id="makingType" value="gram">
                 </div>
                 <div style="flex: 0.7;">
-                    <!-- Default making charge is 10 -->
-                    <label id="makingLabel" style="margin-bottom:4px;"><span id="makeLabelText">Make %:</span></label>
-                    <input type="number" id="makingValue" value="10" style="margin-top:0;">
+                    <label id="makingLabel" style="margin-bottom:4px;"><span id="makeLabelText">Make ₹/gm:</span></label>
+                    <input type="number" id="makingValue" placeholder="" style="margin-top:0;">
                 </div>
             </div>
 
@@ -393,7 +389,6 @@
             <input type="hidden" id="urdMetalType" value="gold">
 
             <div class="input-row">
-                <!-- Empty defaults -->
                 <div><label>⚖️ Gross Wt: <input type="number" id="urdWt" placeholder="" step="0.001"></label></div>
                 <div><label>➖ Less Wt: <input type="number" id="urdLessWt" placeholder="" step="0.001"></label></div>
             </div>
@@ -573,21 +568,14 @@
             // Empty weight and stone inputs
             document.getElementById('goldWeight').value = "";
             document.getElementById('stoneCharge').value = "";
-            document.getElementById('makingValue').value = "10";
+            document.getElementById('makingValue').value = "";
             
             document.getElementById('urdWt').value = "";
             document.getElementById('urdLessWt').value = "";
             document.getElementById('urdPct').value = "80";
             
-            // Reset to Gold defaults
+            // Reset to Gold defaults (24K defaults to gram now)
             updateSaleMetalUI("24");
-            
-            // Explicitly set Making type back to percentage
-            document.getElementById('makingType').value = 'percent';
-            document.getElementById('makeLabelText').innerText = 'Make %:';
-            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
-                b.classList.toggle('active', b.getAttribute('data-value') === 'percent');
-            });
             
             // Reset Silver input back to saved setting
             document.getElementById('silverRateInput').value = document.getElementById('silverRateSetting').value;
@@ -659,6 +647,7 @@
         if (document.getElementById('silverRateSetting').value) document.getElementById('silverRateInput').value = document.getElementById('silverRateSetting').value;
     }
 
+    // Smart rate parser for URD Difference (Flats or Percents)
     function parseSmartRate(base, inputValue) {
         const str = String(inputValue).trim();
         if (str.includes('%')) {
@@ -674,6 +663,23 @@
         const base = parseFloat(document.getElementById('rate24').value) || 0;
         const diffInput = document.getElementById('urdDiff').value;
         return parseSmartRate(base, diffInput);
+    }
+
+    // --- NEW SMART KARAT CALCULATOR (FULL STOP = EXACT RATE) ---
+    function computeKaratRate(k) {
+        const base = parseFloat(document.getElementById('rate24').value) || 0;
+        if (k === 24) return roundToTen(base);
+        
+        const str = String(document.getElementById('pct' + k).value).trim();
+        
+        // If it ends with a full stop, treat as an exact rate directly
+        if (str.endsWith('.')) {
+            return roundToTen(parseFloat(str) || 0);
+        } else {
+            // Default: Treat as a percentage of 24K (even if % symbol is missing)
+            let pct = parseFloat(str.replace('%', '')) || 0;
+            return roundToTen(base * (pct / 100));
+        }
     }
 
     // --- RATE BOARD LOGIC ---
@@ -735,25 +741,23 @@
             if (!document.getElementById("silverRateInput").value) {
                 document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
             }
-            
-            // SMART TOGGLE: Switch to ₹/gm for Silver
+        } else { 
+            box.style.display = "none"; 
+        }
+
+        // SMART TOGGLE: 24K and Silver default to ₹/gm. All others default to %.
+        if (val === 'silver' || val === '24') {
             document.getElementById('makingType').value = 'gram';
             document.getElementById('makeLabelText').innerText = 'Make ₹/gm:';
             document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
                 b.classList.toggle('active', b.getAttribute('data-value') === 'gram');
             });
-            
-        } else { 
-            box.style.display = "none"; 
-            
-            // SMART TOGGLE: Switch back to % if coming from Silver
-            if (previousMetal === 'silver') {
-                document.getElementById('makingType').value = 'percent';
-                document.getElementById('makeLabelText').innerText = 'Make %:';
-                document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
-                    b.classList.toggle('active', b.getAttribute('data-value') === 'percent');
-                });
-            }
+        } else {
+            document.getElementById('makingType').value = 'percent';
+            document.getElementById('makeLabelText').innerText = 'Make %:';
+            document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-value') === 'percent');
+            });
         }
         
         updateSaleBoxRates(); 
@@ -789,13 +793,6 @@
     let saleGrandTotalNum = 0;
 
     function roundToTen(x) { return Math.round(x / 10) * 10; }
-
-    function computeKaratRate(k) {
-        const base = parseFloat(document.getElementById('rate24').value) || 0;
-        if (k === 24) return roundToTen(base);
-        const inputVal = document.getElementById('pct' + k).value;
-        return roundToTen(parseSmartRate(base, inputVal));
-    }
 
     function calculateGold() {
         const type = document.getElementById('metalType').value;
@@ -892,10 +889,10 @@
             });
             renderBillPanel();
             
-            // Empty weight and stone inputs
+            // Empty inputs after adding
             document.getElementById('goldWeight').value = "";
             document.getElementById('stoneCharge').value = "";
-            document.getElementById('makingValue').value = "10";
+            document.getElementById('makingValue').value = "";
             calculateGold();
             
         } else { customAlert("Please enter a weight before adding to the bill."); }
@@ -1390,6 +1387,9 @@
     // --- SETUP LISTENERS ---
     window.addEventListener('DOMContentLoaded', () => {
         loadSettings();
+
+        // Run UI update ONCE at boot so 24K starts on ₹/gm exactly as requested
+        updateSaleMetalUI(document.getElementById('metalType').value);
 
         const allRateInputs = ['rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting', 'silverRateInput'];
         allRateInputs.forEach(id => {
