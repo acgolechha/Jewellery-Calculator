@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="icon" href="logo.jpg">
-    <link rel="apple-touch-icon" href="logo.jpg">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
     
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -257,8 +256,8 @@
         <button id="closeSettings" type="button">✕</button>
     </div>
     <div class="side-panel-content">
-        <label>💰 24K Rate: <input type="number" id="rate24" value="15300"></label>
-        <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="260"></label>
+        <label>💰 24K Rate: <input type="number" id="rate24" value="15300" inputmode="decimal"></label>
+        <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="260" inputmode="decimal"></label>
 
         <div style="background:#FBFAFF; border:1px solid #E8E5F4; border-radius:8px; padding:10px; margin-top:15px; margin-bottom:5px;">
             <div style="font-weight:bold; font-size:12px; color:#9B8AD9; margin-bottom:10px;">DEFAULT MAKING CHARGES</div>
@@ -272,41 +271,41 @@
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
                 <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">24K</div>
                 <select id="defMkType24" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
-                <input type="number" id="defMkVal24" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+                <input type="number" id="defMkVal24" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
                 <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">22K</div>
                 <select id="defMkType22" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
-                <input type="number" id="defMkVal22" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+                <input type="number" id="defMkVal22" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
                 <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">20K</div>
                 <select id="defMkType20" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
-                <input type="number" id="defMkVal20" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+                <input type="number" id="defMkVal20" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
                 <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">18K</div>
                 <select id="defMkType18" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
-                <input type="number" id="defMkVal18" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+                <input type="number" id="defMkVal18" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center;">
                 <div style="width:40px; font-size:13px; font-weight:bold; color:#666;">Sil</div>
                 <select id="defMkTypeSil" style="margin:0; flex:1; padding:4px; font-size:12px;"><option value="percent">%</option><option value="gram">₹/g</option><option value="piece">₹/pc</option></select>
-                <input type="number" id="defMkValSil" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank">
+                <input type="number" id="defMkValSil" style="margin:0; flex:1; padding:4px; font-size:13px;" placeholder="Blank" inputmode="decimal">
             </div>
         </div>
 
         <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Rates ▾</button>
         <div id="advancedMenu" class="advanced-menu">
-            <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300"></label>
-            <label>22K Rate (₹ or %): <input type="text" id="pct22" value="94%"></label>
-            <label>20K Rate (₹ or %): <input type="text" id="pct20" value="88%"></label>
-            <label>18K Rate (₹ or %): <input type="text" id="pct18" value="83%"></label>
-            <label>GST %: <input type="number" id="gstPct" value="3"></label>
+            <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300" inputmode="decimal"></label>
+            <label>22K Rate (₹ or %): <input type="text" id="pct22" value="94%" inputmode="decimal"></label>
+            <label>20K Rate (₹ or %): <input type="text" id="pct20" value="88%" inputmode="decimal"></label>
+            <label>18K Rate (₹ or %): <input type="text" id="pct18" value="83%" inputmode="decimal"></label>
+            <label>GST %: <input type="number" id="gstPct" value="3" inputmode="decimal"></label>
         </div>
         <button id="closeSettingsBtn" type="button" style="margin-top:15px;">Done</button>
     </div>
@@ -341,12 +340,12 @@
 
             <label id="silverRateBox" style="display:none; margin-top:8px;">
                 Silver Rate ₹/gm
-                <input type="number" id="silverRateInput">
+                <input type="number" id="silverRateInput" inputmode="decimal">
             </label>
 
             <div class="input-row">
-                <div><label>⚖️ WT: <input type="number" id="goldWeight" placeholder=""></label></div>
-                <div><label>💎 St. ₹: <input type="number" id="stoneCharge" placeholder=""></label></div>
+                <div><label>⚖️ WT: <input type="number" id="goldWeight" placeholder="" inputmode="decimal"></label></div>
+                <div><label>💎 St. ₹: <input type="number" id="stoneCharge" placeholder="" inputmode="decimal"></label></div>
             </div>
 
             <div class="input-row" style="align-items: flex-end;">
@@ -361,8 +360,14 @@
                 </div>
                 <div style="flex: 0.7;">
                     <label id="makingLabel" style="margin-bottom:4px;"><span id="makeLabelText">Make ₹/gm:</span></label>
-                    <input type="number" id="makingValue" placeholder="" style="margin-top:0;">
+                    <input type="number" id="makingValue" placeholder="" style="margin-top:0;" inputmode="decimal">
                 </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: -5px;">
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; color: #666; cursor: pointer;">
+                    <input type="checkbox" id="applyGstCb" checked style="width: 18px; height: 18px; margin: 0;"> Apply GST
+                </label>
             </div>
 
             <div class="button-row">
@@ -429,13 +434,13 @@
             <input type="hidden" id="urdMetalType" value="gold">
 
             <div class="input-row">
-                <div><label>⚖️ Gross Wt: <input type="number" id="urdWt" placeholder="" step="0.001"></label></div>
-                <div><label>➖ Less Wt: <input type="number" id="urdLessWt" placeholder="" step="0.001"></label></div>
+                <div><label>⚖️ Gross Wt: <input type="number" id="urdWt" placeholder="" step="0.001" inputmode="decimal"></label></div>
+                <div><label>➖ Less Wt: <input type="number" id="urdLessWt" placeholder="" step="0.001" inputmode="decimal"></label></div>
             </div>
 
             <div class="input-row">
-                <div><label>📊 Purity (%): <input type="number" id="urdPct" value="80" step="0.1"></label></div>
-                <div><label>💵 Rate (₹): <input type="number" id="urdRate" value="16580"></label></div>
+                <div><label>📊 Purity (%): <input type="number" id="urdPct" value="80" step="0.1" inputmode="decimal"></label></div>
+                <div><label>💵 Rate (₹): <input type="number" id="urdRate" value="16580" inputmode="decimal"></label></div>
             </div>
 
             <div class="button-row">
@@ -532,9 +537,9 @@
     <span class="footer-title">Jewellery Calculator</span><br>
     <div style="margin-top: 8px;">
         <span style="font-size: 12px; color: #888;  letter-spacing: 1px;">Developed By ArpitGolechha</span><br>
-     
     </div>
 </footer>
+
 <script>
     // --- SECURE CUSTOM DIALOG LOGIC ---
     function customAlert(msg) {
@@ -706,7 +711,7 @@
         }
     }
 
-    // --- NEW SMART KARAT CALCULATOR (FULL STOP = EXACT RATE) ---
+    // --- SMART KARAT CALCULATOR (FULL STOP = EXACT RATE) ---
     function computeKaratRate(k) {
         const base = parseFloat(document.getElementById('rate24').value) || 0;
         if (k === 24) return roundToTen(base);
@@ -723,7 +728,7 @@
         }
     }
 
-    // --- NEW SMART URD CALCULATOR (FULL STOP = EXACT MINUS) ---
+    // --- SMART URD CALCULATOR (FULL STOP = EXACT MINUS) ---
     function calculateDefaultUrdRate() {
         const base = parseFloat(document.getElementById('rate24').value) || 0;
         const diffInput = String(document.getElementById('urdDiff').value).trim();
@@ -796,8 +801,12 @@
             if (!document.getElementById("silverRateInput").value) {
                 document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
             }
+            // Auto Uncheck GST for Silver
+            document.getElementById('applyGstCb').checked = false;
         } else { 
             box.style.display = "none"; 
+            // Auto Check GST for Gold
+            document.getElementById('applyGstCb').checked = true;
         }
 
         // DYNAMIC DEFAULTS LOGIC 
@@ -862,12 +871,16 @@
         const makingType = document.getElementById('makingType').value;
         const makingVal = parseFloat(document.getElementById('makingValue').value) || 0;
         const stone = parseFloat(document.getElementById('stoneCharge').value) || 0;
-        const gst = parseFloat(document.getElementById('gstPct').value) / 100;
+        
+        // CHECK GST TOGGLE
+        const applyGst = document.getElementById('applyGstCb').checked;
+        const gst = applyGst ? (parseFloat(document.getElementById('gstPct').value) / 100) : 0;
 
         let goldValue = rate * weight;
         let makingCharge = (makingType === "percent") ? (goldValue * makingVal / 100) : (makingType === "gram" ? makingVal * weight : makingVal);
         let subTotal = goldValue + makingCharge + stone;
-        let finalTotal = subTotal + (subTotal * gst);
+        let gstAmount = subTotal * gst;
+        let finalTotal = subTotal + gstAmount;
 
         currentFinalTotal = finalTotal;
 
@@ -878,7 +891,7 @@
             </div>
             <div class="result-row">
                 <div><span class="result-label">St. ₹</span><span class="result-value">₹${stone.toFixed(2)}</span></div>
-                <div><span class="result-label">GST</span><span class="result-value">₹${(subTotal * gst).toFixed(2)}</span></div>
+                <div><span class="result-label">GST</span><span class="result-value">₹${gstAmount.toFixed(2)}</span></div>
             </div>
             <div class="final-total-box">💰 Final Total: ₹${finalTotal.toFixed(2)}</div>`;
     }
@@ -946,6 +959,7 @@
                 weight: parseFloat(document.getElementById('goldWeight').value || "0"),
                 make: parseFloat(document.getElementById('makingValue').value || "0"),
                 stone: parseFloat(document.getElementById('stoneCharge').value || "0"),
+                hasGst: document.getElementById('applyGstCb').checked,
                 total: currentFinalTotal
             });
             renderBillPanel();
@@ -972,6 +986,9 @@
             document.getElementById('makingType').value = item.makeType;
             document.getElementById('makeLabelText').innerText = item.makeType === 'percent' ? 'Make %:' : (item.makeType === 'gram' ? 'Make ₹/gm:' : 'Make ₹/pc:');
             
+            // Restore exact GST checkbox state for this item
+            document.getElementById('applyGstCb').checked = item.hasGst !== undefined ? item.hasGst : (item.type !== 'silver');
+
             // Sync boxes to match edited item
             document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
                 b.classList.toggle('active', b.getAttribute('data-value') === item.makeType);
@@ -1485,6 +1502,9 @@
                 }
             }
         });
+
+        // LISTENER FOR GST TOGGLE
+        document.getElementById('applyGstCb').addEventListener('change', calculateGold);
 
         document.getElementById('urdRate').addEventListener('input', function() {
             if (document.getElementById('urdMetalType').value === 'gold') {
