@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+    
+    <link rel="icon" href="Logo.jpg">
+    <link rel="apple-touch-icon" href="Logo.jpg">
     
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -280,7 +281,7 @@
                     <div class="set-mk-btn" data-val="piece">/pc</div>
                 </div>
                 <input type="hidden" id="defMkType24" value="percent">
-                <input type="number" id="defMkVal24" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="-" inputmode="decimal">
+                <input type="number" id="defMkVal24" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
@@ -291,7 +292,7 @@
                     <div class="set-mk-btn" data-val="piece">/pc</div>
                 </div>
                 <input type="hidden" id="defMkType22" value="percent">
-                <input type="number" id="defMkVal22" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="-" inputmode="decimal">
+                <input type="number" id="defMkVal22" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
@@ -302,7 +303,7 @@
                     <div class="set-mk-btn" data-val="piece">/pc</div>
                 </div>
                 <input type="hidden" id="defMkType20" value="percent">
-                <input type="number" id="defMkVal20" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="-" inputmode="decimal">
+                <input type="number" id="defMkVal20" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
@@ -313,7 +314,7 @@
                     <div class="set-mk-btn" data-val="piece">/pc</div>
                 </div>
                 <input type="hidden" id="defMkType18" value="percent">
-                <input type="number" id="defMkVal18" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="-" inputmode="decimal">
+                <input type="number" id="defMkVal18" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
             </div>
 
             <div style="display:flex; gap:5px; align-items:center;">
@@ -324,7 +325,7 @@
                     <div class="set-mk-btn" data-val="piece">/pc</div>
                 </div>
                 <input type="hidden" id="defMkTypeSil" value="gram">
-                <input type="number" id="defMkValSil" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="-" inputmode="decimal">
+                <input type="number" id="defMkValSil" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
             </div>
         </div>
 
@@ -764,9 +765,11 @@
         
         const str = String(document.getElementById('pct' + k).value).trim();
         
+        // If it ends with a full stop, treat as an exact rate directly
         if (str.endsWith('.')) {
             return roundToTen(parseFloat(str) || 0);
         } else {
+            // Default: Treat as a percentage of 24K (even if % symbol is missing)
             let pct = parseFloat(str.replace('%', '')) || 0;
             return roundToTen(base * (pct / 100));
         }
@@ -778,9 +781,11 @@
         const diffInput = String(document.getElementById('urdDiff').value).trim();
         
         if (diffInput.endsWith('.')) {
+            // Flat deduction: "500." -> Base minus 500
             const flat = parseFloat(diffInput) || 0;
             return Math.round(base - flat);
         } else {
+            // Percentage deduction: "3" -> Base minus 3%
             let pct = parseFloat(diffInput.replace('%', '')) || 0;
             return Math.round(base - (base * (pct / 100)));
         }
@@ -821,8 +826,10 @@
             const label = val === 'silver' ? 'Sil' : val + 'K';
             
             if (val === activeVal) {
+                // Large, bold, white text for the active metal
                 btn.innerHTML = `${label}<br><span style="font-size:13px; font-weight:bold; color:#FFF; display:block; margin-top:2px;">₹${rates[val]}</span>`;
             } else {
+                // Smaller, muted text for inactive metals so they are still readable
                 btn.innerHTML = `${label}<br><span style="font-size:11px; font-weight:normal; color:#999; display:block; margin-top:2px;">₹${rates[val]}</span>`;
             }
         });
@@ -841,9 +848,11 @@
             if (!document.getElementById("silverRateInput").value) {
                 document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
             }
+            // Auto Uncheck GST for Silver
             document.getElementById('applyGstCb').checked = false;
         } else { 
             box.style.display = "none"; 
+            // Auto Check GST for Gold
             document.getElementById('applyGstCb').checked = true;
         }
 
@@ -1031,14 +1040,19 @@
             let unitTxt = item.makeType === 'percent' ? '(%)' : (item.makeType === 'gram' ? '(₹/g)' : '(₹/pc)');
             document.getElementById('makeLabelText').innerText = 'Temp ' + unitTxt + ':';
             
+            // Restore exact GST checkbox state for this item
             document.getElementById('applyGstCb').checked = item.hasGst !== undefined ? item.hasGst : (item.type !== 'silver');
 
+            // Sync boxes to match edited item
             document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
                 b.classList.toggle('active', b.getAttribute('data-value') === item.makeType);
             });
             
             document.getElementById('goldWeight').value = item.weight;
+            
+            // Put the edited make value into the Temp override box
             document.getElementById('makingValue').value = item.make;
+            
             document.getElementById('stoneCharge').value = item.stone;
 
             billItems.splice(index, 1);
@@ -1165,6 +1179,7 @@
             document.getElementById('urdWt').value = "";
             document.getElementById('urdLessWt').value = "";
             
+            // DO NOT clear urdPct so it stays exactly as typed until refresh
             calculateURD();
         } else { customAlert("Please enter Old Metal weight before adding."); }
     });
