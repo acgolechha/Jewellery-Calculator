@@ -14,15 +14,9 @@
     <style>
         /* =============================================
            iOS SAFARI SCROLL FIX
-           - position: fixed on html + body truly locks
-             the page on iOS, preventing rubber-band
-             bounce behind fixed overlays
-           - overflow-y: auto + -webkit-overflow-scrolling
-             on .calculator-container keeps inner scroll
-             smooth with momentum on iPhone/iPad
            ============================================= */
         html, body {
-            position: fixed;                   /* iOS fix: truly locks body bounce */
+            position: fixed;
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -35,7 +29,6 @@
             padding: 0;
         }
 
-        /* Inner wrapper replaces body margin/flex */
         #appRoot {
             max-width: 600px;
             margin: 0 auto;
@@ -46,18 +39,16 @@
             box-sizing: border-box;
         }
 
-        /* Container scrolls inside; body stays locked */
         .calculator-container { 
             display: flex;
             gap: 20px;
             flex-wrap: wrap; 
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;  /* smooth momentum scroll on iOS */
+            -webkit-overflow-scrolling: touch; 
             flex: 1;
             padding-bottom: 20px;
         }
 
-        /* PULL TO REFRESH INDICATOR */
         #ptr-indicator {
             position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
             background: #FFFFFF; width: 40px; height: 40px; border-radius: 50%;
@@ -71,8 +62,7 @@
             display: flex; background: #FFFFFF; border-radius: 6px;
             border: 1px solid #E8E5F4; padding: 3px; margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
-            gap: 2px;
-            flex-shrink: 0;
+            gap: 2px; flex-shrink: 0;
         }
         .nav-btn {
             background: transparent; color: #666666; font-size: 11px;
@@ -83,7 +73,6 @@
         .nav-btn.active { background: #9B8AD9; color: #FFFFFF; }
         #toggleSettings:active { background: #F6F4FB; }
 
-        /* PAGE SWITCHING STYLES */
         .page { display: none; animation: fadeIn 0.3s ease; width: 100%;}
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -101,7 +90,7 @@
         }
         .side-panel-header h2 { margin: 0; font-size: 18px; }
         #closeSettings { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-        .side-panel-content { padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .side-panel-content { padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
 
         .advanced-menu { margin-top: 15px; padding-top: 10px; border-top: 1px solid #E8E5F4; display: none; }
         .advanced-menu.show { display: block; }
@@ -123,23 +112,19 @@
         input, select {
             width: 100%; padding: 8px; margin-top: 4px; background: #FFFFFF;
             color: #2F2F2F; border: 1px solid #E8E5F4; border-radius: 8px;
-            box-sizing: border-box; -webkit-user-select: auto; user-select: auto;
-            font-size: 16px;
+            box-sizing: border-box; -webkit-user-select: auto; user-select: auto; font-size: 16px;
         }
         .input-row { display: flex; gap: 15px; margin-top: 10px; justify-content: space-between; }
         .input-row > div { flex: 1; }
         .input-row label { margin-top: 0; }
 
-        /* METAL BOXES STYLES */
         .metal-selector { display: flex; gap: 6px; margin-top: 6px; margin-bottom: 4px; }
         .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; cursor: pointer; transition: 0.2s; line-height: 1.2; }
         .metal-btn.active { background: #9B8AD9; color: #FFF; border-color: #9B8AD9; }
 
-        /* SETTINGS MAKING BOXES */
         .set-mk-btn { flex: 1; padding: 6px 0; background: #E8E5F4; color: #666; font-size: 11px; font-weight: bold; text-align: center; cursor: pointer; border-radius: 4px; transition: 0.2s; }
         .set-mk-btn.active { background: #9B8AD9; color: #FFF; }
 
-        /* RESULTS STYLES */
         .result { margin-top: 5px; margin-bottom: 12px; padding: 8px; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 10px; }
         .result-row { display: flex; gap: 8px; margin-bottom: 6px; }
         .result-row > div { flex: 1; background: #FFFFFF; border: 1px solid #E8E5F4; padding: 4px 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -148,7 +133,6 @@
         .final-total-box { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #B8A9E0; text-align: center; font-size: 17px; font-weight: bold; color: darkred; }
         .urd-total-box { color: #4CAF50 !important; }
 
-        /* BILL PANELS */
         .bill-panel { margin-top: 15px; padding: 10px; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; }
         .bill-panel.hide { display: none; }
         .bill-header { color: #9B8AD9; font-size: 14px; font-weight: bold; margin-bottom: 10px; text-align: center; }
@@ -157,13 +141,11 @@
         .bill-table-head { color: #9B8AD9; font-weight: bold; border-bottom: 1px solid #E8E5F4; padding-bottom: 4px; margin-bottom: 4px; }
         .bill-item { color: #666666; margin-bottom: 4px; }
 
-        /* Estimate Table Columns */
         .bill-col { flex: 1; text-align: center; }
         .item-col { text-align: left; flex: 1.2; }
         .total-col { text-align: right; flex: 1.5; font-weight: bold; color:#2F2F2F; }
         .action-col { flex: 0.8; text-align: right; white-space: nowrap; }
 
-        /* URD Table Columns (Compact) */
         .urd-col { flex: 1; text-align: center; font-size: 9px; padding: 0 1px; }
         .urd-col.item-col { flex: 1.2; text-align: left; }
         .urd-col.total-col { flex: 1.5; text-align: right; color:#2F2F2F; font-weight:bold; }
@@ -180,12 +162,10 @@
         .silver-total-row { color: #607D8B; display: none; }
         .grand-final-row { font-size: 15px; color: darkred; border-top: 1px dashed #B8A9E0; padding-top: 6px; margin-top: 4px; }
 
-        /* SETTLEMENT BOX */
         .settlement-box { margin-top: 12px; padding: 12px; background: #FFFFFF; border: 2px dashed #9B8AD9; border-radius: 8px; }
         .set-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
         .set-final { display: flex; justify-content: space-between; font-size: 16px; font-weight: bold; color: #9B8AD9; border-top: 1px dashed #E8E5F4; padding-top: 6px; margin-top: 4px; }
 
-        /* BUTTONS */
         .button-row { display: flex; gap: 10px; margin-top: 15px; }
         .button-row button { margin-top: 0 !important; }
         .bill-actions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; justify-content: space-between; }
@@ -205,14 +185,12 @@
         footer { background: transparent; text-align: center; padding: 10px; margin-top: 5px; flex-shrink: 0;}
         .footer-title { color: #9B8AD9; font-size: 14px; font-weight: bold; }
 
-        /* IMAGE MODAL STYLES */
         .img-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; flex-direction: column; }
         .img-modal.show { display: flex; animation: fadeIn 0.3s ease; }
         .img-modal img { max-width: 90%; max-height: 70vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .modal-btn-container { display: flex; gap: 15px; width: 90%; max-width: 400px; margin-top: 20px; }
         .modal-btn-container button { margin-top: 0 !important; flex: 1; font-size: 14px; padding: 12px; }
 
-        /* CUSTOM DIALOG */
         .custom-dialog-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5000; justify-content: center; align-items: center; }
         .custom-dialog-overlay.show { display: flex; animation: fadeIn 0.2s ease; }
         .custom-dialog { background: #FFFFFF; padding: 20px; border-radius: 12px; width: 80%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -223,7 +201,6 @@
         .btn-confirm { background: #E53935; color: #FFF; }
         .btn-ok { background: #9B8AD9; color: #FFF; }
 
-        /* A5 PRINT TEMPLATE STYLES */
         #a5-template-container { position: absolute; top: -9999px; left: -9999px; }
         .a5-paper { width: 595px; min-height: 842px; background: white; padding: 40px; box-sizing: border-box; font-family: Arial, sans-serif; color: #000; border: 1px solid #ccc; }
         .a5-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #9B8AD9; padding-bottom: 15px; }
@@ -238,15 +215,101 @@
         .a5-grand { font-size: 22px; font-weight: bold; color: darkred; margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 15px; }
         .a5-footer { margin-top: 60px; text-align: center; font-size: 14px; color: #888; border-top: 1px solid #eee; padding-top: 20px;}
         .a5-settlement { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 2px dashed #9B8AD9; border-radius: 8px; }
+
+        /* =============================================
+           SMART PERCENTAGE CALCULATOR STYLES
+           ============================================= */
+        .smart-calc-wrapper {
+            background-color: #f7f7f9;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .smart-calc-display-wrapper {
+            padding: 10px 5px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-height: 100px;
+            justify-content: flex-end;
+            border-bottom: 1px solid #e2e2e2;
+        }
+        .smart-calc-display {
+            font-size: 34px;
+            color: #333;
+            word-wrap: break-word;
+            max-width: 100%;
+            text-align: right;
+            line-height: 1.2;
+            font-weight: 300;
+        }
+        .smart-calc-preview-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            min-height: 30px;
+        }
+        .smart-calc-preview {
+            font-size: 22px;
+            color: #777;
+            text-align: right;
+            flex-grow: 1;
+            margin-right: 15px;
+            font-weight: 400;
+        }
+        .smart-calc-backspace-btn {
+            background: none !important;
+            border: none;
+            color: #2b9e40;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            margin: 0;
+        }
+        .smart-calc-btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .smart-calc-btn {
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 400;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        .smart-calc-btn:active { transform: scale(0.92); }
+        .smart-calc-btn.number { background-color: #ffffff; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .smart-calc-btn.operator { background-color: #797979; color: white; font-size: 28px; }
+        .smart-calc-btn.top-op { background-color: #e6e6e6; color: #333; }
+        .smart-calc-btn.equal { background-color: #24a13b; color: white; font-size: 32px; }
+        
+        .smart-calc-btn.number:hover { background-color: #f0f0f0; }
+        .smart-calc-btn.operator:hover { background-color: #666666; }
+        .smart-calc-btn.top-op:hover { background-color: #d4d4d4; }
+        .smart-calc-btn.equal:hover { background-color: #1e8731; }
     </style>
 </head>
 <body>
 
-<!-- App root wrapper replaces body margin/padding (needed for position:fixed body iOS fix) -->
 <div id="appRoot">
 
 <div id="sidebarOverlay" class="overlay"></div>
-
 <div id="ptr-indicator">🔄</div>
 
 <div id="customDialogOverlay" class="custom-dialog-overlay">
@@ -271,15 +334,10 @@
             <div class="a5-date" id="a5-doc-date"></div>
         </div>
         <table class="a5-table" id="a5-items-table">
-            <thead>
-            <tr id="a5-table-head">
-            </tr>
-            </thead>
-            <tbody id="a5-table-body">
-            </tbody>
+            <thead><tr id="a5-table-head"></tr></thead>
+            <tbody id="a5-table-body"></tbody>
         </table>
-        <div class="a5-totals" id="a5-totals-area">
-        </div>
+        <div class="a5-totals" id="a5-totals-area"></div>
         <div id="a5-settlement-area"></div>
         <div class="a5-footer">Thank you for your business!</div>
     </div>
@@ -291,83 +349,91 @@
         <button id="closeSettings" type="button">✕</button>
     </div>
     <div class="side-panel-content">
-        <label>💰 24K Rate: <input type="number" id="rate24" value="15300" inputmode="decimal"></label>
-        <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="260" inputmode="decimal"></label>
+        <div style="flex-grow: 1;">
+            <label>💰 24K Rate: <input type="number" id="rate24" value="15300" inputmode="decimal"></label>
+            <label>🥈 Silver Rate: <input type="number" id="silverRateSetting" value="260" inputmode="decimal"></label>
 
-        <div style="background:#FBFAFF; border:1px solid #E8E5F4; border-radius:8px; padding:10px; margin-top:15px; margin-bottom:5px;">
-            <div style="font-weight:bold; font-size:12px; color:#9B8AD9; margin-bottom:10px;">DEFAULT MAKING CHARGES</div>
+            <div style="background:#FBFAFF; border:1px solid #E8E5F4; border-radius:8px; padding:10px; margin-top:15px; margin-bottom:5px;">
+                <div style="font-weight:bold; font-size:12px; color:#9B8AD9; margin-bottom:10px;">DEFAULT MAKING CHARGES</div>
+                
+                <div style="display:flex; gap:5px; font-size:10px; color:#666; margin-bottom:4px; font-weight:bold;">
+                    <div style="width:30px;">Metal</div>
+                    <div style="flex:1;">Type</div>
+                    <div style="width:60px;">Value</div>
+                </div>
+
+                <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                    <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">24K</div>
+                    <div style="display:flex; flex:1; gap:2px;" data-target="defMkType24">
+                        <div class="set-mk-btn active" data-val="percent">%</div>
+                        <div class="set-mk-btn" data-val="gram">₹/g</div>
+                        <div class="set-mk-btn" data-val="piece">/pc</div>
+                    </div>
+                    <input type="hidden" id="defMkType24" value="percent">
+                    <input type="number" id="defMkVal24" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
+                </div>
+
+                <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                    <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">22K</div>
+                    <div style="display:flex; flex:1; gap:2px;" data-target="defMkType22">
+                        <div class="set-mk-btn active" data-val="percent">%</div>
+                        <div class="set-mk-btn" data-val="gram">₹/g</div>
+                        <div class="set-mk-btn" data-val="piece">/pc</div>
+                    </div>
+                    <input type="hidden" id="defMkType22" value="percent">
+                    <input type="number" id="defMkVal22" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
+                </div>
+
+                <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                    <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">20K</div>
+                    <div style="display:flex; flex:1; gap:2px;" data-target="defMkType20">
+                        <div class="set-mk-btn active" data-val="percent">%</div>
+                        <div class="set-mk-btn" data-val="gram">₹/g</div>
+                        <div class="set-mk-btn" data-val="piece">/pc</div>
+                    </div>
+                    <input type="hidden" id="defMkType20" value="percent">
+                    <input type="number" id="defMkVal20" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
+                </div>
+
+                <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
+                    <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">18K</div>
+                    <div style="display:flex; flex:1; gap:2px;" data-target="defMkType18">
+                        <div class="set-mk-btn active" data-val="percent">%</div>
+                        <div class="set-mk-btn" data-val="gram">₹/g</div>
+                        <div class="set-mk-btn" data-val="piece">/pc</div>
+                    </div>
+                    <input type="hidden" id="defMkType18" value="percent">
+                    <input type="number" id="defMkVal18" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
+                </div>
+
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">Sil</div>
+                    <div style="display:flex; flex:1; gap:2px;" data-target="defMkTypeSil">
+                        <div class="set-mk-btn" data-val="percent">%</div>
+                        <div class="set-mk-btn active" data-val="gram">₹/g</div>
+                        <div class="set-mk-btn" data-val="piece">/pc</div>
+                    </div>
+                    <input type="hidden" id="defMkTypeSil" value="gram">
+                    <input type="number" id="defMkValSil" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
+                </div>
+            </div>
+
+            <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Rates ▾</button>
+            <div id="advancedMenu" class="advanced-menu">
+                <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300" inputmode="decimal"></label>
+                <label>22K Rate (₹ or %): <input type="text" id="pct22" value="94%" inputmode="decimal"></label>
+                <label>20K Rate (₹ or %): <input type="text" id="pct20" value="88%" inputmode="decimal"></label>
+                <label>18K Rate (₹ or %): <input type="text" id="pct18" value="83%" inputmode="decimal"></label>
+                <label>GST %: <input type="number" id="gstPct" value="3" inputmode="decimal"></label>
+            </div>
             
-            <div style="display:flex; gap:5px; font-size:10px; color:#666; margin-bottom:4px; font-weight:bold;">
-                <div style="width:30px;">Metal</div>
-                <div style="flex:1;">Type</div>
-                <div style="width:60px;">Value</div>
-            </div>
-
-            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
-                <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">24K</div>
-                <div style="display:flex; flex:1; gap:2px;" data-target="defMkType24">
-                    <div class="set-mk-btn active" data-val="percent">%</div>
-                    <div class="set-mk-btn" data-val="gram">₹/g</div>
-                    <div class="set-mk-btn" data-val="piece">/pc</div>
-                </div>
-                <input type="hidden" id="defMkType24" value="percent">
-                <input type="number" id="defMkVal24" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
-            </div>
-
-            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
-                <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">22K</div>
-                <div style="display:flex; flex:1; gap:2px;" data-target="defMkType22">
-                    <div class="set-mk-btn active" data-val="percent">%</div>
-                    <div class="set-mk-btn" data-val="gram">₹/g</div>
-                    <div class="set-mk-btn" data-val="piece">/pc</div>
-                </div>
-                <input type="hidden" id="defMkType22" value="percent">
-                <input type="number" id="defMkVal22" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
-            </div>
-
-            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
-                <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">20K</div>
-                <div style="display:flex; flex:1; gap:2px;" data-target="defMkType20">
-                    <div class="set-mk-btn active" data-val="percent">%</div>
-                    <div class="set-mk-btn" data-val="gram">₹/g</div>
-                    <div class="set-mk-btn" data-val="piece">/pc</div>
-                </div>
-                <input type="hidden" id="defMkType20" value="percent">
-                <input type="number" id="defMkVal20" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
-            </div>
-
-            <div style="display:flex; gap:5px; align-items:center; margin-bottom:6px;">
-                <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">18K</div>
-                <div style="display:flex; flex:1; gap:2px;" data-target="defMkType18">
-                    <div class="set-mk-btn active" data-val="percent">%</div>
-                    <div class="set-mk-btn" data-val="gram">₹/g</div>
-                    <div class="set-mk-btn" data-val="piece">/pc</div>
-                </div>
-                <input type="hidden" id="defMkType18" value="percent">
-                <input type="number" id="defMkVal18" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
-            </div>
-
-            <div style="display:flex; gap:5px; align-items:center;">
-                <div style="width:30px; font-size:13px; font-weight:bold; color:#666;">Sil</div>
-                <div style="display:flex; flex:1; gap:2px;" data-target="defMkTypeSil">
-                    <div class="set-mk-btn" data-val="percent">%</div>
-                    <div class="set-mk-btn active" data-val="gram">₹/g</div>
-                    <div class="set-mk-btn" data-val="piece">/pc</div>
-                </div>
-                <input type="hidden" id="defMkTypeSil" value="gram">
-                <input type="number" id="defMkValSil" style="margin:0; width:60px; padding:4px; font-size:13px; text-align:center;" placeholder="Blank" inputmode="decimal">
-            </div>
+            <button id="closeSettingsBtn" type="button" style="margin-top:15px;">Done</button>
         </div>
 
-        <button id="toggleAdvanced" class="toggle-adv-btn" type="button">Advanced Rates ▾</button>
-        <div id="advancedMenu" class="advanced-menu">
-            <label>📉 URD Difference (₹ or %): <input type="text" id="urdDiff" value="300" inputmode="decimal"></label>
-            <label>22K Rate (₹ or %): <input type="text" id="pct22" value="94%" inputmode="decimal"></label>
-            <label>20K Rate (₹ or %): <input type="text" id="pct20" value="88%" inputmode="decimal"></label>
-            <label>18K Rate (₹ or %): <input type="text" id="pct18" value="83%" inputmode="decimal"></label>
-            <label>GST %: <input type="number" id="gstPct" value="3" inputmode="decimal"></label>
+        <div style="text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #E8E5F4; font-size: 11px; color: #999; display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <span>v1.0</span>
+            <button id="updateAppBtn" type="button" style="background: #E8E5F4 !important; color: #666 !important; padding: 4px 8px !important; font-size: 10px !important; width: auto !important; border-radius: 4px; margin: 0 !important; border: 1px solid #ccc !important;">Update</button>
         </div>
-        <button id="closeSettingsBtn" type="button" style="margin-top:15px;">Done</button>
     </div>
 </nav>
 
@@ -375,6 +441,7 @@
     <button id="toggleSettings" class="nav-btn">⚙️ Set</button>
     <button id="navSale" class="nav-btn active">🧾 Est.</button>
     <button id="navUrd" class="nav-btn">⚖️ URD</button>
+    <button id="navCalc" class="nav-btn">🧮 Calc</button>
     <button id="navRates" class="nav-btn">📊 Rates</button>
     <button id="navHistory" class="nav-btn">📜 Hist.</button>
 </nav>
@@ -383,7 +450,6 @@
 
     <div id="pageSale" class="calculator page active">
         <fieldset style="border:none; padding:0; margin:0;">
-
             <div class="result" id="goldResult"></div>
 
             <label style="display:flex; justify-content:space-between; align-items:flex-end;">
@@ -484,7 +550,6 @@
 
     <div id="pageUrd" class="calculator page">
         <fieldset style="border:none; padding:0; margin:0;">
-
             <div class="result" id="urdResult">
                 <div class="result-row">
                     <div><span class="result-label">Net Wt</span><span class="result-value">0.000g</span></div>
@@ -532,7 +597,6 @@
                 <div id="urdItemsList"></div>
 
                 <div class="grand-total-amount">
-                    
                     <div class="total-row" style="color:#666; font-size:11px; justify-content:space-between; border-bottom:1px solid #E8E5F4; padding-bottom:6px; margin-bottom:6px;">
                         <span><b>GWt:</b> <span id="urdTotalGross">0.00</span>g</span>
                         <span><b>LWt:</b> <span id="urdTotalLess">0.00</span>g</span>
@@ -578,14 +642,53 @@
                     <div id="setPayStatus" style="text-align:right; font-size:11px; margin-top:2px; font-weight:bold;"></div>
                 </div>
             </div>
-
         </fieldset>
+    </div>
+
+    <div id="pageCalc" class="calculator page">
+        <h3 style="color:#9B8AD9; text-align:center; margin-top:0; margin-bottom: 5px;">Smart Calculator</h3>
+        
+        <div class="smart-calc-wrapper">
+            <div class="smart-calc-display-wrapper">
+                <div class="smart-calc-display" id="scDisplay"></div>
+                <div class="smart-calc-preview-row">
+                    <div class="smart-calc-preview" id="scPreview"></div>
+                    <button class="smart-calc-backspace-btn" onclick="scHandleBackspace()">⌫</button>
+                </div>
+            </div>
+
+            <div class="smart-calc-btn-grid">
+                <button class="smart-calc-btn top-op" onclick="scClearCalculator()">C</button>
+                <button class="smart-calc-btn top-op" onclick="scHandleParenthesis()">()</button>
+                <button class="smart-calc-btn top-op" onclick="scUpdateCalculation('%')">%</button>
+                <button class="smart-calc-btn operator" onclick="scUpdateCalculation('/')">÷</button>
+
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('7')">7</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('8')">8</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('9')">9</button>
+                <button class="smart-calc-btn operator" onclick="scUpdateCalculation('*')">×</button>
+
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('4')">4</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('5')">5</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('6')">6</button>
+                <button class="smart-calc-btn operator" onclick="scUpdateCalculation('-')">−</button>
+
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('1')">1</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('2')">2</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('3')">3</button>
+                <button class="smart-calc-btn operator" onclick="scUpdateCalculation('+')">+</button>
+
+                <button class="smart-calc-btn number" onclick="scHandlePlusMinus()">+/-</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('0')">0</button>
+                <button class="smart-calc-btn number" onclick="scUpdateCalculation('.')">.</button>
+                <button class="smart-calc-btn equal" onclick="scHandleEquals()">=</button>
+            </div>
+        </div>
     </div>
 
     <div id="pageRates" class="calculator page">
         <h3 style="color:#9B8AD9; text-align:center; margin-top:0; border-bottom:1px solid #E8E5F4; padding-bottom:10px;">Live Rate Board</h3>
-        <div class="result" id="rateBoardContent" style="padding: 15px; margin-top: 15px;">
-            </div>
+        <div class="result" id="rateBoardContent" style="padding: 15px; margin-top: 15px;"></div>
     </div>
 
     <div id="pageHistory" class="calculator page">
@@ -593,8 +696,7 @@
         <div class="result" style="text-align:center; font-size:12px; color:#666;">
             👆 Tap a saved bill below to reload its items AND restore the exact gold rates from that day!
         </div>
-        <div id="historyList" style="margin-top:15px;">
-            </div>
+        <div id="historyList" style="margin-top:15px;"></div>
         <button id="clearHistoryBtn" type="button" class="clear-btn" style="margin-top: 15px;">🗑️ Clear All History</button>
     </div>
 
@@ -607,9 +709,7 @@
     </div>
 </footer>
 
-</div><!-- end #appRoot -->
-
-<script>
+</div><script>
     // --- SECURE CUSTOM DIALOG LOGIC ---
     function customAlert(msg) {
         document.getElementById('customDialogText').innerText = msg;
@@ -704,16 +804,19 @@
     // --- TOP NAVIGATION LOGIC ---
     const navSale = document.getElementById('navSale');
     const navUrd = document.getElementById('navUrd');
+    const navCalc = document.getElementById('navCalc');
     const navRates = document.getElementById('navRates');
     const navHistory = document.getElementById('navHistory');
+    
     const pageSale = document.getElementById('pageSale');
     const pageUrd = document.getElementById('pageUrd');
+    const pageCalc = document.getElementById('pageCalc');
     const pageRates = document.getElementById('pageRates');
     const pageHistory = document.getElementById('pageHistory');
 
     function switchPage(activeNav, activePage) {
-        [navSale, navUrd, navRates, navHistory].forEach(btn => btn.classList.remove('active'));
-        [pageSale, pageUrd, pageRates, pageHistory].forEach(page => page.classList.remove('active'));
+        [navSale, navUrd, navCalc, navRates, navHistory].forEach(btn => btn.classList.remove('active'));
+        [pageSale, pageUrd, pageCalc, pageRates, pageHistory].forEach(page => page.classList.remove('active'));
         activeNav.classList.add('active');
         activePage.classList.add('active');
         mainContainer.scrollTop = 0; 
@@ -721,6 +824,7 @@
 
     navSale.addEventListener('click', () => switchPage(navSale, pageSale));
     navUrd.addEventListener('click', () => switchPage(navUrd, pageUrd));
+    navCalc.addEventListener('click', () => switchPage(navCalc, pageCalc));
     navRates.addEventListener('click', () => { updateRateBoard(); switchPage(navRates, pageRates); });
     navHistory.addEventListener('click', () => { renderHistory(); switchPage(navHistory, pageHistory); });
 
@@ -740,6 +844,10 @@
     advBtn.addEventListener('click', () => {
         advMenu.classList.toggle('show');
         advBtn.innerHTML = advMenu.classList.contains('show') ? "Hide Settings ▴" : "Advanced Settings ▾";
+    });
+
+    document.getElementById('updateAppBtn').addEventListener('click', () => {
+        customAlert("You are on the latest version.");
     });
 
     function saveAllRates() {
@@ -1021,7 +1129,6 @@
             const defMk = document.getElementById('quickDefMk').value;
             const finalMakeVal = tempMk !== "" ? parseFloat(tempMk) : (parseFloat(defMk) || 0);
 
-            // Compute and store gstAmount alongside item
             const _wt = parseFloat(document.getElementById('goldWeight').value || "0");
             const _stone = parseFloat(document.getElementById('stoneCharge').value || "0");
             const _mkType = document.getElementById('makingType').value;
@@ -1535,9 +1642,119 @@
 
     document.getElementById('putSaleBtn').addEventListener('click', calculateSettlement);
 
+    // --- SMART PERCENTAGE CALCULATOR LOGIC ---
+    let scCalculation = localStorage.getItem('smart_calculation') || '';
+    let scStack = [];
+    let scDisplay = document.getElementById('scDisplay');
+    let scPreview = document.getElementById('scPreview');
+
+    const scFormatForDisplay = (str) => {
+        let formatted = str.replace(/\b(\d+)(\.\d+)?\b/g, function(match, p1, p2) {
+            return Number(p1).toLocaleString('en-US') + (p2 || '');
+        });
+        formatted = formatted.replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−');
+        formatted = formatted.replace(/([+\−×÷%()])/g, '<span style="color: #24a13b;">$1</span>');
+        return formatted;
+    }
+
+    const scFormatNumberOnly = (str) => {
+        return String(str).replace(/\b(\d+)(\.\d+)?\b/g, function(match, p1, p2) {
+            return Number(p1).toLocaleString('en-US') + (p2 || '');
+        });
+    }
+
+    const scEvaluateExpression = (expr) => {
+        let parsed = expr;
+        parsed = parsed.replace(/(\d)\(/g, '$1*(');
+        parsed = parsed.replace(/\)\(/g, ')*(');
+        parsed = parsed.replace(/\+\s*(\d+(?:\.\d+)?)%/g, '*(1+$1/100)');
+        parsed = parsed.replace(/-\s*(\d+(?:\.\d+)?)%/g, '*(1-$1/100)');
+        parsed = parsed.replace(/\*\s*(\d+(?:\.\d+)?)%/g, '*($1/100)');
+        parsed = parsed.replace(/\/\s*(\d+(?:\.\d+)?)%/g, '/($1/100)');
+        parsed = parsed.replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
+        return eval(parsed);
+    }
+
+    const scSaveAndUpdate = () => {
+        scDisplay.innerHTML = scFormatForDisplay(scCalculation) || '';
+        if (scCalculation) {
+            try {
+                let res = scEvaluateExpression(scCalculation);
+                if (res !== undefined && !isNaN(res)) {
+                    let resStr = String(Math.round(res * 100000000) / 100000000); 
+                    if (resStr !== scCalculation) {
+                        scPreview.innerHTML = scFormatNumberOnly(resStr);
+                    } else {
+                        scPreview.innerHTML = '';
+                    }
+                } else {
+                    scPreview.innerHTML = '';
+                }
+            } catch(e) {
+                scPreview.innerHTML = '';
+            }
+        } else {
+            scPreview.innerHTML = '';
+        }
+        localStorage.setItem('smart_calculation', scCalculation);
+    }
+
+    const scClearCalculator = () => {
+        scCalculation = '';
+        scStack = [];
+        scSaveAndUpdate();
+    }
+
+    const scHandleBackspace = () => {
+        scCalculation = scCalculation.slice(0, -1);
+        if (scCalculation.endsWith('(') || scCalculation.endsWith(')')) {
+            scStack.pop(); 
+        }
+        scSaveAndUpdate();
+    }
+
+    const scUpdateCalculation = (char) => {
+        scCalculation += char;
+        scSaveAndUpdate();
+    }
+
+    const scHandleParenthesis = () => {
+        if (scStack.length % 2 === 0) {
+            scCalculation += '(';
+            scStack.push('(');
+        } else {
+            scCalculation += ')';
+            scStack.push(')');
+        }
+        scSaveAndUpdate();
+    }
+
+    const scHandlePlusMinus = () => {
+        if (scCalculation === '') return;
+        try {
+            let res = scEvaluateExpression(scCalculation);
+            scCalculation = String(res * -1);
+            scSaveAndUpdate();
+        } catch(e) { }
+    }
+
+    const scHandleEquals = () => {
+        if (scCalculation === '') return;
+        try {
+            let res = scEvaluateExpression(scCalculation);
+            scCalculation = String(Math.round(res * 100000000) / 100000000);
+            scSaveAndUpdate();
+            scStack = []; 
+        } catch (error) {
+            scPreview.innerHTML = 'Error';
+        }
+    }
+
+
     // --- SETUP LISTENERS ---
     window.addEventListener('DOMContentLoaded', () => {
         loadSettings();
+        scSaveAndUpdate(); // Init smart calc
 
         updateSaleMetalUI(document.getElementById('metalType').value);
 
