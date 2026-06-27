@@ -450,6 +450,7 @@
                     <span class="bill-col">WT</span>
                     <span class="bill-col">MK</span>
                     <span class="bill-col">ST</span>
+                    <span class="bill-col">Tax</span>
                     <span class="bill-col total-col">Total</span>
                     <span class="bill-col action-col"></span>
                 </div>
@@ -978,6 +979,7 @@
             else { goldVal += item.total; goldWt += item.weight; }
 
             const itemName = item.type === 'silver' ? `Sil ${index + 1}` : `${item.type}K ${index + 1}`;
+            const taxDisplay = (item.tax !== undefined && item.tax > 0) ? item.tax.toFixed(0) : '0';
             list.innerHTML += `
                 <div class="bill-item">
                     <span class="bill-col item-col">${itemName}</span>
@@ -985,6 +987,7 @@
                     <span class="bill-col">${item.weight}</span>
                     <span class="bill-col">${item.make}</span>
                     <span class="bill-col">${item.stone}</span>
+                    <span class="bill-col">${taxDisplay}</span>
                     <span class="bill-col total-col">${item.total.toFixed(0)}</span>
                     <span class="bill-col action-col">
                         <span class="edit-btn" data-index="${index}">✎</span>
@@ -1018,13 +1021,24 @@
             const defMk = document.getElementById('quickDefMk').value;
             const finalMakeVal = tempMk !== "" ? parseFloat(tempMk) : (parseFloat(defMk) || 0);
 
+            // Compute and store gstAmount alongside item
+            const _wt = parseFloat(document.getElementById('goldWeight').value || "0");
+            const _stone = parseFloat(document.getElementById('stoneCharge').value || "0");
+            const _mkType = document.getElementById('makingType').value;
+            const _goldVal = rateVal * _wt;
+            const _mk = (_mkType === "percent") ? (_goldVal * finalMakeVal / 100) : (_mkType === "gram" ? finalMakeVal * _wt : finalMakeVal);
+            const _sub = _goldVal + _mk + _stone;
+            const _gstRate = document.getElementById('applyGstCb').checked ? (parseFloat(document.getElementById('gstPct').value) / 100) : 0;
+            const _tax = _sub * _gstRate;
+
             billItems.push({
                 type: typeVal,
-                makeType: document.getElementById('makingType').value,
+                makeType: _mkType,
                 rate: rateVal,
-                weight: parseFloat(document.getElementById('goldWeight').value || "0"),
+                weight: _wt,
                 make: finalMakeVal,
-                stone: parseFloat(document.getElementById('stoneCharge').value || "0"),
+                stone: _stone,
+                tax: _tax,
                 hasGst: document.getElementById('applyGstCb').checked,
                 total: currentFinalTotal
             });
@@ -1352,7 +1366,8 @@
         let shareText = "🧾 *Estimate Quotation*\n------------------------\n";
         billItems.forEach((item, index) => {
             const itemName = item.type === 'silver' ? `Silver ${index + 1}` : `${item.type}K ${index + 1}`;
-            shareText += `*${itemName}*\nRate: ₹${item.rate}/g | Wt: ${item.weight}g | Mk: ${item.make} | St: ₹${item.stone}\nTotal: ₹${item.total.toFixed(0)}\n------------------------\n`;
+            const taxAmt = (item.tax !== undefined && item.tax > 0) ? ` | Tax: ₹${item.tax.toFixed(0)}` : '';
+            shareText += `*${itemName}*\nRate: ₹${item.rate}/g | Wt: ${item.weight}g | Mk: ${item.make} | St: ₹${item.stone}${taxAmt}\nTotal: ₹${item.total.toFixed(0)}\n------------------------\n`;
         });
 
         let goldWt = document.getElementById('gtGoldWt').innerText;
@@ -1415,11 +1430,12 @@
         if (type === 'sale') {
             currentImageFilename = "Estimate_Quotation.png";
             document.getElementById('a5-doc-title').innerText = "Estimate Quotation";
-            thead.innerHTML = `<th>Item</th><th>Rate</th><th>Wt</th><th>Mk</th><th>St</th><th class="right">Total</th>`;
+            thead.innerHTML = `<th>Item</th><th>Rate</th><th>Wt</th><th>Mk</th><th>St</th><th>Tax</th><th class="right">Total</th>`;
 
             billItems.forEach((item, index) => {
                 const name = item.type === 'silver' ? `Silver ${index+1}` : `${item.type}K ${index+1}`;
-                tbody.innerHTML += `<tr><td>${name}</td><td>₹${item.rate}</td><td>${item.weight}g</td><td>${item.make}</td><td>₹${item.stone}</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
+                const a5Tax = (item.tax !== undefined && item.tax > 0) ? `₹${item.tax.toFixed(0)}` : '₹0';
+                tbody.innerHTML += `<tr><td>${name}</td><td>₹${item.rate}</td><td>${item.weight}g</td><td>${item.make}</td><td>₹${item.stone}</td><td>${a5Tax}</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
             });
 
             totalsArea.innerHTML = `
