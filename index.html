@@ -120,7 +120,7 @@
         .input-row label { margin-top: 0; }
 
         .metal-selector { display: flex; gap: 6px; margin-top: 6px; margin-bottom: 4px; }
-        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; cursor: pointer; transition: 0.2s; line-height: 1.2; }
+        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; cursor: transition: 0.2s; line-height: 1.2; }
         .metal-btn.active { background: #9B8AD9; color: #FFF; border-color: #9B8AD9; }
 
         .set-mk-btn { flex: 1; padding: 6px 0; background: #E8E5F4; color: #666; font-size: 11px; font-weight: bold; text-align: center; cursor: pointer; border-radius: 4px; transition: 0.2s; }
@@ -497,7 +497,6 @@
                 </div>
             </div>
 
-            <!-- ADDED id="gstLabelContainer" and user-select:none to support long press -->
             <div style="display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: -5px;">
                 <label id="gstLabelContainer" style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; color: #666; cursor: pointer; -webkit-user-select: none; user-select: none;">
                     <input type="checkbox" id="applyGstCb" checked style="width: 18px; height: 18px; margin: 0;"> Apply GST
@@ -744,7 +743,6 @@
         `;
         document.getElementById('customDialogOverlay').classList.add('show');
         
-        // Auto-focus and select the text
         setTimeout(() => {
             const inp = document.getElementById('promptInput');
             if(inp) { inp.focus(); inp.select(); }
@@ -873,8 +871,33 @@
         advBtn.innerHTML = advMenu.classList.contains('show') ? "Hide Settings ▴" : "Advanced Settings ▾";
     });
 
-    document.getElementById('updateAppBtn').addEventListener('click', () => {
-        customAlert("You are on the latest version.");
+    document.getElementById('updateAppBtn').addEventListener('click', async () => {
+        if (window.AndroidBridge && window.AndroidBridge.checkForUpdate) {
+            window.AndroidBridge.checkForUpdate();
+        } else {
+            try {
+                // Clear Caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+
+                // Unregister Service Workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+
+                customAlert("Updating app... Please wait.");
+                setTimeout(() => {
+                    window.location.href = window.location.pathname + '?v=' + Date.now();
+                }, 1000);
+            } catch (e) {
+                window.location.reload(true);
+            }
+        }
     });
 
     function saveAllRates() {
