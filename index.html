@@ -13,13 +13,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* =============================================
-           iOS SAFARI SCROLL FIX
+           iOS SAFARI SCROLL FIX & OVERSCROLL FIX
            ============================================= */
         html, body {
             position: fixed;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            overscroll-behavior-y: contain; /* Prevents native mobile browser pull-to-refresh */
             font-family: Arial, sans-serif;
             background: #F6F4FB;
             color: #2F2F2F;
@@ -709,7 +710,7 @@
     </div>
 </footer>
 
-</div><script>
+<script>
     // --- SECURE CUSTOM DIALOG LOGIC ---
     function customAlert(msg) {
         document.getElementById('customDialogText').innerText = msg;
@@ -1045,7 +1046,10 @@
         const makingVal = tempMk !== "" ? parseFloat(tempMk) : (parseFloat(defMk) || 0);
 
         const applyGst = document.getElementById('applyGstCb').checked;
-        const gst = applyGst ? (parseFloat(document.getElementById('gstPct').value) / 100) : 0;
+        
+        const gstPctValue = document.getElementById('gstPct').value || 0; 
+        const gst = applyGst ? (parseFloat(gstPctValue) / 100) : 0;
+        const displayGstPct = applyGst ? gstPctValue : 0; 
 
         let goldValue = rate * weight;
         let makingCharge = (makingType === "percent") ? (goldValue * makingVal / 100) : (makingType === "gram" ? makingVal * weight : makingVal);
@@ -1062,7 +1066,7 @@
             </div>
             <div class="result-row">
                 <div><span class="result-label">St. ₹</span><span class="result-value">₹${stone.toFixed(2)}</span></div>
-                <div><span class="result-label">GST</span><span class="result-value">₹${gstAmount.toFixed(2)}</span></div>
+                <div><span class="result-label">GST (${displayGstPct}%)</span><span class="result-value">₹${gstAmount.toFixed(2)}</span></div>
             </div>
             <div class="final-total-box">💰 Final Total: ₹${finalTotal.toFixed(2)}</div>`;
     }
@@ -1114,7 +1118,7 @@
             document.getElementById('gtSilverVal').innerText = silverVal.toFixed(2);
         } else { slvRow.style.display = 'none'; }
 
-        saleGrandTotalNum = goldVal + silverVal;
+        saleGrandTotalNum = Math.round((goldVal + silverVal) * 100) / 100;
         document.getElementById('grandTotalValue').innerText = saleGrandTotalNum.toFixed(2);
 
         if(!document.getElementById('settlementBox').classList.contains('hide')){ calculateSettlement(); }
@@ -1190,7 +1194,13 @@
         }
     });
 
-    document.getElementById('clearBillBtn').addEventListener('click', () => { billItems = []; renderBillPanel(); });
+    document.getElementById('clearBillBtn').addEventListener('click', () => { 
+        if(billItems.length === 0) return;
+        customConfirm("Clear all items from this estimate?", () => {
+            billItems = []; 
+            renderBillPanel(); 
+        });
+    });
 
 
     // --- PAGE 2: URD LOGIC ---
@@ -1286,7 +1296,7 @@
             document.getElementById('urdSilverVal').innerText = silverVal.toFixed(2);
         } else { slvRow.style.display = 'none'; }
 
-        urdGrandTotalNum = goldVal + silverVal;
+        urdGrandTotalNum = Math.round((goldVal + silverVal) * 100) / 100;
         document.getElementById('urdGrandTotalValue').innerText = urdGrandTotalNum.toFixed(2);
 
         if(!document.getElementById('settlementBox').classList.contains('hide')){ calculateSettlement(); }
@@ -1333,7 +1343,13 @@
         }
     });
 
-    document.getElementById('clearUrdBtn').addEventListener('click', () => { urdBillItems = []; renderUrdBillPanel(); });
+    document.getElementById('clearUrdBtn').addEventListener('click', () => { 
+        if(urdBillItems.length === 0) return;
+        customConfirm("Clear all items from this URD receipt?", () => {
+            urdBillItems = []; 
+            renderUrdBillPanel(); 
+        });
+    });
 
     // --- HISTORY LOGIC ---
     let appHistory = JSON.parse(localStorage.getItem('appHistory')) || [];
@@ -1520,7 +1536,7 @@
     // --- A5 IMAGE GENERATION ---
     let currentImageFilename = "Quotation.png";
 
-    function closeImageModal() { document.getElementById('imageModal').classList.remove('show'); }
+    window.closeImageModal = function() { document.getElementById('imageModal').classList.remove('show'); }
 
     async function generateA5Image(type) {
         const a5Paper = document.getElementById('a5-paper');
@@ -1604,16 +1620,39 @@
     document.getElementById('imageBillBtn').addEventListener('click', () => { if(billItems.length > 0) generateA5Image('sale'); });
     document.getElementById('imageUrdBtn').addEventListener('click', () => { if(urdBillItems.length > 0) generateA5Image('urd'); });
 
-    document.getElementById('modalShareActionBtn').addEventListener('click', () => {
+    document.getElementById('modalShareActionBtn').addEventListener('click', async () => {
         const imgEl = document.getElementById('generatedImageResult');
         const dataUrl = imgEl.src;
 
-        if (window.AndroidBridge) { window.AndroidBridge.shareImage(dataUrl); } 
-        else {
-            const a = document.createElement('a');
-            a.href = dataUrl;
-            a.download = currentImageFilename;
-            a.click();
+        if (window.AndroidBridge) { 
+            window.AndroidBridge.shareImage(dataUrl); 
+        } else {
+            try {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const file = new File([blob], currentImageFilename, { type: blob.type });
+                
+                // Attempt native Web Share API with files
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'Quotation',
+                        files: [file]
+                    });
+                } else {
+                    // Fallback to downloading
+                    const a = document.createElement('a');
+                    a.href = dataUrl;
+                    a.download = currentImageFilename;
+                    a.click();
+                }
+            } catch (err) {
+                console.error("Error sharing image:", err);
+                // Last fallback to downloading
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = currentImageFilename;
+                a.click();
+            }
         }
     });
 
@@ -1672,6 +1711,10 @@
         parsed = parsed.replace(/\*\s*(\d+(?:\.\d+)?)%/g, '*($1/100)');
         parsed = parsed.replace(/\/\s*(\d+(?:\.\d+)?)%/g, '/($1/100)');
         parsed = parsed.replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
+        
+        // Security check: Only allow math characters before eval
+        if (!/^[0-9+\-*/(). ]+$/.test(parsed)) return 0;
+        
         return eval(parsed);
     }
 
@@ -1699,13 +1742,13 @@
         localStorage.setItem('smart_calculation', scCalculation);
     }
 
-    const scClearCalculator = () => {
+    window.scClearCalculator = () => {
         scCalculation = '';
         scStack = [];
         scSaveAndUpdate();
     }
 
-    const scHandleBackspace = () => {
+    window.scHandleBackspace = () => {
         scCalculation = scCalculation.slice(0, -1);
         if (scCalculation.endsWith('(') || scCalculation.endsWith(')')) {
             scStack.pop(); 
@@ -1713,12 +1756,12 @@
         scSaveAndUpdate();
     }
 
-    const scUpdateCalculation = (char) => {
+    window.scUpdateCalculation = (char) => {
         scCalculation += char;
         scSaveAndUpdate();
     }
 
-    const scHandleParenthesis = () => {
+    window.scHandleParenthesis = () => {
         if (scStack.length % 2 === 0) {
             scCalculation += '(';
             scStack.push('(');
@@ -1729,7 +1772,7 @@
         scSaveAndUpdate();
     }
 
-    const scHandlePlusMinus = () => {
+    window.scHandlePlusMinus = () => {
         if (scCalculation === '') return;
         try {
             let res = scEvaluateExpression(scCalculation);
@@ -1738,7 +1781,7 @@
         } catch(e) { }
     }
 
-    const scHandleEquals = () => {
+    window.scHandleEquals = () => {
         if (scCalculation === '') return;
         try {
             let res = scEvaluateExpression(scCalculation);
