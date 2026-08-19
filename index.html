@@ -497,8 +497,9 @@
                 </div>
             </div>
 
+            <!-- ADDED id="gstLabelContainer" and user-select:none to support long press -->
             <div style="display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: -5px;">
-                <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; color: #666; cursor: pointer;">
+                <label id="gstLabelContainer" style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; color: #666; cursor: pointer; -webkit-user-select: none; user-select: none;">
                     <input type="checkbox" id="applyGstCb" checked style="width: 18px; height: 18px; margin: 0;"> Apply GST
                 </label>
             </div>
@@ -728,6 +729,31 @@
         document.getElementById('confirmYesBtn').onclick = () => {
             closeCustomDialog();
             onConfirm();
+        };
+    }
+
+    // NEW: Custom Prompt for quick inputs (like long-pressing GST)
+    function customPrompt(title, defaultVal, onConfirm) {
+        document.getElementById('customDialogText').innerHTML = `
+            <div style="margin-bottom: 15px; color: #9B8AD9;">${title}</div>
+            <input type="number" id="promptInput" value="${defaultVal}" style="width: 80%; padding: 10px; font-size: 18px; text-align: center; border: 2px solid #9B8AD9; border-radius: 8px;" inputmode="decimal">
+        `;
+        document.getElementById('customDialogBtns').innerHTML = `
+            <button class="custom-dialog-btn btn-cancel" onclick="closeCustomDialog()">Cancel</button>
+            <button class="custom-dialog-btn btn-confirm" id="confirmPromptBtn" style="background: #9B8AD9;">Save</button>
+        `;
+        document.getElementById('customDialogOverlay').classList.add('show');
+        
+        // Auto-focus and select the text
+        setTimeout(() => {
+            const inp = document.getElementById('promptInput');
+            if(inp) { inp.focus(); inp.select(); }
+        }, 100);
+
+        document.getElementById('confirmPromptBtn').onclick = () => {
+            const val = document.getElementById('promptInput').value;
+            closeCustomDialog();
+            onConfirm(val);
         };
     }
     
@@ -1884,6 +1910,49 @@
         calculateGold(); 
         calculateURD(); 
         updateRateBoard();
+
+        // ============================================
+        // LONG PRESS TO EDIT GST LOGIC
+        // ============================================
+        let holdTimer;
+        let longPressFired = false;
+        const gstLabel = document.getElementById('gstLabelContainer');
+
+        const startHold = () => {
+            longPressFired = false;
+            holdTimer = setTimeout(() => {
+                longPressFired = true; // Mark as long press so click doesn't toggle checkbox
+                const currentGst = document.getElementById('gstPct').value;
+                
+                customPrompt("Edit GST Percentage (%)", currentGst, (newVal) => {
+                    if (newVal !== null && newVal !== "") {
+                        document.getElementById('gstPct').value = newVal;
+                        saveAllRates();
+                        calculateGold();
+                    }
+                });
+            }, 500); // 500ms long press delay
+        };
+
+        const cancelHold = () => {
+            clearTimeout(holdTimer);
+        };
+
+        // Touch & Mouse listeners for starting/stopping the timer
+        gstLabel.addEventListener('touchstart', startHold, {passive: true});
+        gstLabel.addEventListener('touchend', cancelHold);
+        gstLabel.addEventListener('touchmove', cancelHold);
+        gstLabel.addEventListener('mousedown', startHold);
+        gstLabel.addEventListener('mouseup', cancelHold);
+        gstLabel.addEventListener('mouseleave', cancelHold);
+
+        // Prevent the checkbox from toggling if it was a long press
+        gstLabel.addEventListener('click', (e) => {
+            if (longPressFired) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
     });
 </script>
 </body>
