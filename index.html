@@ -13,8 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* =============================================
-           iOS SAFARI SCROLL FIX & OVERSCROLL FIX
-           ============================================= */
+            iOS SAFARI SCROLL FIX & OVERSCROLL FIX
+            ============================================= */
         html, body {
             position: fixed;
             width: 100%;
@@ -302,6 +302,205 @@
         .smart-calc-btn.operator:hover { background-color: #666666; }
         .smart-calc-btn.top-op:hover { background-color: #d4d4d4; }
         .smart-calc-btn.equal:hover { background-color: #1e8731; }
+
+        /* RATE BOARD POSTER STYLES (NEW TEMPLATE) */
+        :root {
+            --cream: #fbf4e3;
+            --cream2: #fffaf0;
+            --gold: #bd8520;
+            --gold2: #d4a443;
+            --brown: #512510;
+            --maroon: #76150d;
+            --green: #3c7e4b;
+            --muted: #6b5a49;
+        }
+        .board {
+            width: 560px;
+            aspect-ratio: 1054 / 1492;
+            position: relative;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 30% 18%, rgba(255,255,255,.85), transparent 33%),
+                linear-gradient(180deg, #fdf7e9 0%, #f9efd9 100%);
+            border: 7px solid #ae7d1e;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+            padding: 2.2% 3.7% 0;
+            box-sizing: border-box;
+            font-family: Georgia, "Times New Roman", serif;
+            color: #512510;
+            text-align: left;
+        }
+        .board-inner {
+            height: 100%;
+            border: 1.5px solid #c6a24e;
+            position: relative;
+            padding: 1.2% 3.8% 0;
+            box-sizing: border-box;
+        }
+        .board-inner:before, .board-inner:after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(191,145,47,.5), transparent);
+        }
+        .board-inner:before { top: 0; }
+        .board-inner:after { bottom: 0; }
+        .board-brand {
+            text-align: center;
+            margin-top: 0.7%;
+        }
+        .board-brand img {
+            width: 31%;
+            max-width: 210px;
+            height: auto;
+            display: block;
+            margin: 0 auto -1.2%;
+            mix-blend-mode: multiply;
+        }
+        .board-title {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: .03em;
+            margin: 0;
+        }
+        .board-subtitle {
+            font-size: 18px;
+            letter-spacing: .14em;
+            margin-top: -2px;
+        }
+        .board-tagline {
+            font-style: italic;
+            font-size: 15px;
+            margin-top: 4px;
+        }
+        .board-hero {
+            text-align: center;
+            margin-top: 14px;
+        }
+        .board-hero h1 {
+            font-size: 48px;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: .02em;
+        }
+        .board-ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 12px 8% 16px;
+            color: var(--gold);
+        }
+        .board-ornament .line { flex: 1; height: 2px; background: var(--gold2); }
+        .board-ornament .mark { font-size: 22px; transform: rotate(45deg); }
+        .board-date {
+            width: 56%;
+            margin: 0 auto 16px;
+            background: linear-gradient(180deg, #e6b54f, #d39a2d);
+            border-radius: 999px;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.45);
+        }
+        .board-rates {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .board-rate-row {
+            border: 2px solid #e1ba60;
+            border-radius: 16px;
+            background: rgba(255,252,243,.62);
+            min-height: 65px;
+            display: grid;
+            grid-template-columns: 22% 40% 38%;
+            align-items: center;
+            padding: 4px 16px;
+            box-sizing: border-box;
+        }
+        .board-metal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .board-ingot {
+            font-size: 36px;
+            filter: drop-shadow(2px 3px 2px rgba(0,0,0,.13));
+        }
+        .board-rate-name {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: left;
+            padding-left: 8%;
+            white-space: nowrap;
+        }
+        .board-value {
+            border-left: 2px solid #e2c370;
+            padding-right: 6%;
+            text-align: right;
+            font-size: 28px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        .board-value small {
+            display: block;
+            font-size: 11px;
+            margin-top: -1px;
+            letter-spacing: .02em;
+            font-weight: 700;
+            color: var(--muted);
+        }
+        .board-fine {
+            text-align: center;
+            font-style: italic;
+            font-size: 12px;
+            line-height: 1.35;
+            margin: 16px 7% 12px;
+        }
+        .board-footer {
+            position: absolute;
+            left: -1.5px;
+            right: -1.5px;
+            bottom: -1.5px;
+            height: 65px;
+            background: linear-gradient(180deg, #7d170f, #6a100a);
+            color: white;
+            display: grid;
+            grid-template-columns: 41% 28% 31%;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .board-fcell {
+            height: 72%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 4px;
+            border-right: 2px solid rgba(229,170,68,.65);
+            box-sizing: border-box;
+        }
+        .board-fcell:last-child { border-right: 0; }
+        .board-fi { font-size: 1.5em; flex: 0 0 auto; }
+        .board-ft {
+            font-size: 11px;
+            line-height: 1.15;
+        }
+        .board-ft strong { font-weight: 400; }
+        .board-social { 
+            font-size: 12px; 
+            font-weight: 700; 
+            text-align: center;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -342,87 +541,71 @@
     </div>
 </div>
 
-<!-- PDF-MATCHED SOCIAL RATE CARD TEMPLATE (HIDDEN) -->
+<!-- NEW POSTER-MATCHED SOCIAL RATE CARD TEMPLATE (HIDDEN) -->
 <div id="rate-card-container" style="position: fixed; top: 0; left: 0; opacity: 0; z-index: -9999; pointer-events: none;">
-    <div id="rate-card" style="width: 540px; background: #FDFBF7; border: 4px solid #C5A059; border-radius: 8px; padding: 35px 30px; font-family: 'Times New Roman', Times, serif; box-sizing: border-box; text-align: center; color: #2F2F2F; position: relative;">
-        
-        <!-- Top Branding -->
-        <div style="font-size: 26px; font-weight: bold; color: #2C5E3B; letter-spacing: 1px; font-family: Arial, sans-serif;">GOLECHHA</div>
-        <div style="font-size: 14px; font-weight: bold; color: #2C5E3B; letter-spacing: 4px; margin-top: 2px; font-family: Arial, sans-serif;">JEWELLERS</div>
-        <div style="font-size: 12px; color: #555; margin-top: 4px; font-style: italic;">The Name You Can Trust</div>
-        
-        <!-- Title Banner -->
-        <div style="margin-top: 20px; font-size: 24px; font-weight: bold; color: #2C5E3B; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #C5A059; display: inline-block; padding-bottom: 4px;">TODAY'S RATES</div>
-        
-        <!-- Date Badge -->
-        <div style="margin-top: 12px;">
-            <span id="rc-date" style="display: inline-block; background: #E6D5B8; border: 1px solid #C5A059; border-radius: 16px; padding: 5px 18px; font-size: 13px; color: #333; font-weight: bold; font-family: Arial, sans-serif;"></span>
-        </div>
-        
-        <!-- Rate Rows Container -->
-        <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 12px;">
-            
-            <!-- 24K Row -->
-            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
-                <div style="width: 50px; text-align: left;">
-                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#D4AF37"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+    <main id="rate-card-board" class="board">
+        <section class="board-inner">
+            <header class="board-brand">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAEnAScDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9MVZS2MninMqsOTUG45yoFTJhhuavnkj1GxhyvGc+hpcFeWl607g8gDFIyI3YcVLTFcaMMSVJ4oKDHSnKpY4p6rgYFNAmMYN1BFIuQc06STZ0HFIIix5NVbQTaEJPOBSqCee1IEwe1KQccUw0FIBH0pMEZ56UgU5zUihWwD0ouBCwP0qUDAApyjA4o69PxoENY7TmlbOM0x+oX1qU4b5RT0AaCc4NA460h4OMZpS3PHFIBO5prLk4oJOM0hc4wKYDscUjLzgCmjcxxng08Lnn1qWAlID93nFFGMDn8qaEx20D1qNg2Pl605iMcdacg/I1SAjI2jpxTlOR60hyTk9DRnAA7VLYWAc9ac2aQEZz79aGPP0ppAX4x/hxSjjAOKYvU0ucgH0pCYjggZHakDEjrxT2yR0pmCenWiwD1J3c0E4PFNAx1z6mlz680AIXycdqUMD0NN2tkkd6cCQM0AJk5IpMknk8Uhyw5pR09sUAI3SlUE802Q/LnFPB4zQAo9e9FMzzRUvVgdEufzqVcbdu059TUcZ3Y96mBI7dK85lCgA9T9BRx2FKuO4/Glx6GmMYoJb3qTHfNAxnrThtI49aYEbcj60gBAzTyBnj0qJpChyVzSAsYzyKUEAc0wOCvXk05T0zSAlXGKU5PQUxTj2qRcgdfzpDGg4696Vjk005JFOByMcUDG856UjZwQeaf2wKY2ccg5rNoBFA/Cn44pAOM+tOXkYpDHAcUnJ/Glx600nB4qWBLjOKaVweaFZs8injBGKhuwhmOOaXGMUjA54oUk5zxTTuBL0FJu4ppzjpSdOKALCnjGKKbnoKTJqo6oT2P/2Q==" alt="Golechha Jewellers logo">
+                <div class="board-title">GOLECHHA</div>
+                <div class="board-subtitle">JEWELLERS</div>
+                <div class="board-tagline">The Name You Can Trust</div>
+            </header>
+
+            <section class="board-hero">
+                <h1>TODAY’S RATES</h1>
+                <div class="board-ornament">
+                    <span class="line"></span><span class="mark">◆</span><span class="line"></span>
                 </div>
-                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">GOLD 24K</div>
-                <div style="font-size: 22px; font-weight: bold; color: #2C5E3B; font-family: Arial, sans-serif;" id="rc-r24"></div>
+                <div class="board-date"><span class="icon">📅</span><span id="rc-date">8 SEPTEMBER</span></div>
+            </section>
+
+            <section class="board-rates" aria-label="Today's jewellery rates">
+                <div class="board-rate-row">
+                    <div class="board-metal"><span class="board-ingot">🪙</span></div>
+                    <div class="board-rate-name">GOLD 24K</div>
+                    <div class="board-value" id="rc-r24">₹ 0</div>
+                </div>
+                <div class="board-rate-row">
+                    <div class="board-metal"><span class="board-ingot">🪙</span></div>
+                    <div class="board-rate-name">GOLD 22K</div>
+                    <div class="board-value" id="rc-r22">₹ 0</div>
+                </div>
+                <div class="board-rate-row">
+                    <div class="board-metal"><span class="board-ingot">🪙</span></div>
+                    <div class="board-rate-name">GOLD 20K</div>
+                    <div class="board-value" id="rc-r20">₹ 0</div>
+                </div>
+                <div class="board-rate-row">
+                    <div class="board-metal"><span class="board-ingot">🪙</span></div>
+                    <div class="board-rate-name">SILVER</div>
+                    <div class="board-value" id="rc-rAg">₹ 0<small>(PER 10 GRAMS)</small></div>
+                </div>
+            </section>
+
+            <div class="board-ornament" style="margin-top:22px;margin-bottom:12px;">
+                <span class="line"></span><span class="mark">◆</span><span class="line"></span>
             </div>
 
-            <!-- 22K Row -->
-            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
-                <div style="width: 50px; text-align: left;">
-                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#D4AF37"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
-                </div>
-                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">GOLD 22K</div>
-                <div style="font-size: 22px; font-weight: bold; color: #2C5E3B; font-family: Arial, sans-serif;" id="rc-r22"></div>
-            </div>
+            <p class="board-fine">
+                The rates are subject to change at the time of purchase.<br>
+                Making charges and applicable GST are additional.
+            </p>
 
-            <!-- 20K Row -->
-            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
-                <div style="width: 50px; text-align: left;">
-                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#D4AF37"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+            <footer class="board-footer">
+                <div class="board-fcell">
+                    <div class="board-fi">⌖</div>
+                    <div class="board-ft">Main Road, Mahavir Marg,<br>Karanja Lad, 444105</div>
                 </div>
-                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">GOLD 20K</div>
-                <div style="font-size: 22px; font-weight: bold; color: #2C5E3B; font-family: Arial, sans-serif;" id="rc-r20"></div>
-            </div>
-
-            <!-- Silver Row -->
-            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
-                <div style="width: 50px; text-align: left;">
-                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#A9A9A9"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+                <div class="board-fcell">
+                    <div class="board-ft"><strong>Time:</strong><br>11:00 AM to 8:00 PM</div>
                 </div>
-                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">SILVER</div>
-                <div style="text-align: right;">
-                    <div style="font-size: 22px; font-weight: bold; color: #333; font-family: Arial, sans-serif;" id="rc-rAg"></div>
-                    <div style="font-size: 10px; color: #666; font-family: Arial, sans-serif; letter-spacing: 0.5px;">(PER 10 GRAMS)</div>
+                <div class="board-fcell">
+                    <div class="board-ft board-social">@golechhajewellers</div>
                 </div>
-            </div>
-
-        </div>
-        
-        <!-- Disclaimer -->
-        <div style="margin-top: 20px; font-size: 11px; color: #666; font-style: italic; line-height: 1.4;">
-            The rates displayed are indicative and subject to change at the time of purchase.<br>
-            Making charges and applicable GST are additional.
-        </div>
-        
-        <!-- Footer Bar -->
-        <div style="margin-top: 25px; background: #3B1C1C; color: #FFF; border-radius: 6px; padding: 12px 10px; display: flex; justify-content: space-around; align-items: center; font-size: 10px; font-family: Arial, sans-serif;">
-            <div style="max-width: 140px; text-align: left; line-height: 1.3;">
-                📍 Main Road, Mahavir Marg, Karanja Lad, 444105
-            </div>
-            <div style="max-width: 110px; text-align: center; line-height: 1.3;">
-                ⏰ Time:<br>11:00 AM to 8:00 PM
-            </div>
-            <div style="max-width: 120px; text-align: right; line-height: 1.3; font-weight: bold;">
-                📸 @golechhajewellers
-            </div>
-        </div>
-
-    </div>
+            </footer>
+        </section>
+    </main>
 </div>
 
 <nav id="sidePanel" class="side-panel">
@@ -1102,7 +1285,7 @@
         if(val === "silver") {
             box.style.display = "block";
             if (!document.getElementById("silverRateInput").value) {
-                document.getElementById("silverRateInput").value = document.getElementById("silverRateSetting").value;
+                document.getElementById("silverRateInput").value = document.getElementById('silverRateSetting').value;
             }
             document.getElementById('applyGstCb').checked = false;
         } else { 
@@ -1792,7 +1975,7 @@
 
     // --- PROFESSIONAL RATE CARD IMAGE GENERATION ---
     async function generateRateCardImage() {
-        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'LONG', year: 'numeric' }).toUpperCase();
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }).toUpperCase();
         
         const r24 = computeKaratRate(24);
         const r22 = computeKaratRate(22);
@@ -1805,12 +1988,12 @@
         document.getElementById('rc-r24').innerText = "₹ " + r24.toLocaleString('en-IN');
         document.getElementById('rc-r22').innerText = "₹ " + r22.toLocaleString('en-IN');
         document.getElementById('rc-r20').innerText = "₹ " + r20.toLocaleString('en-IN');
-        document.getElementById('rc-rAg').innerText = "₹ " + rAg10Grams.toLocaleString('en-IN');
+        document.getElementById('rc-rAg').innerHTML = "₹ " + rAg10Grams.toLocaleString('en-IN') + "<small>(PER 10 GRAMS)</small>";
 
         currentImageFilename = "Golechha_Jewellers_Rates.png";
 
         try {
-            const cardElement = document.getElementById('rate-card');
+            const cardElement = document.getElementById('rate-card-board');
             const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
             const imgData = canvas.toDataURL("image/png");
 
@@ -2080,7 +2263,7 @@
         calculateURD(); 
         updateRateBoard();
 
-        // LONG PRESS RATE BOARD TO GENERATE PDF-MATCHED IMAGE CARD
+        // LONG PRESS RATE BOARD TO GENERATE POSTER IMAGE CARD
         let holdTimerRates;
         const rateBoardEl = document.getElementById('rateBoardContent');
 
