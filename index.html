@@ -6,8 +6,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link rel="icon" href="Logo.jpg">
-    <link rel="apple-touch-icon" href="Logo.jpg">
+    <link rel="icon" href="PASTE_YOUR_BASE64_TEXT_HERE">
+    <link rel="apple-touch-icon" href="PASTE_YOUR_BASE64_TEXT_HERE">
     
     <title>Jewellery Rate Calculator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -20,7 +20,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            overscroll-behavior-y: contain; /* Prevents native mobile browser pull-to-refresh */
+            overscroll-behavior-y: contain;
             font-family: Arial, sans-serif;
             background: #F6F4FB;
             color: #2F2F2F;
@@ -78,7 +78,7 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* WIDER SIDE PANEL STYLES */
+        /* SIDE PANEL */
         .side-panel {
             position: fixed; top: 0; left: -360px; width: 340px; height: 100%;
             background: #FFFFFF; box-shadow: 2px 0 15px rgba(0,0,0,0.15);
@@ -120,7 +120,7 @@
         .input-row label { margin-top: 0; }
 
         .metal-selector { display: flex; gap: 6px; margin-top: 6px; margin-bottom: 4px; }
-        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; cursor: transition: 0.2s; line-height: 1.2; }
+        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; transition: 0.2s; line-height: 1.2; }
         .metal-btn.active { background: #9B8AD9; color: #FFF; border-color: #9B8AD9; }
 
         .set-mk-btn { flex: 1; padding: 6px 0; background: #E8E5F4; color: #666; font-size: 11px; font-weight: bold; text-align: center; cursor: pointer; border-radius: 4px; transition: 0.2s; }
@@ -144,6 +144,7 @@
 
         .bill-col { flex: 1; text-align: center; }
         .item-col { text-align: left; flex: 1.2; }
+        .item-name-col { cursor: pointer; color: #2F2F2F; font-weight: bold; border-bottom: 1px dashed #9B8AD9; padding-bottom: 1px; touch-action: manipulation; }
         .total-col { text-align: right; flex: 1.5; font-weight: bold; color:#2F2F2F; }
         .action-col { flex: 0.8; text-align: right; white-space: nowrap; }
 
@@ -217,9 +218,7 @@
         .a5-footer { margin-top: 60px; text-align: center; font-size: 14px; color: #888; border-top: 1px solid #eee; padding-top: 20px;}
         .a5-settlement { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 2px dashed #9B8AD9; border-radius: 8px; }
 
-        /* =============================================
-           SMART PERCENTAGE CALCULATOR STYLES
-           ============================================= */
+        /* SMART PERCENTAGE CALCULATOR */
         .smart-calc-wrapper {
             background-color: #f7f7f9;
             width: 100%;
@@ -299,7 +298,6 @@
         .smart-calc-btn.operator { background-color: #797979; color: white; font-size: 28px; }
         .smart-calc-btn.top-op { background-color: #e6e6e6; color: #333; }
         .smart-calc-btn.equal { background-color: #24a13b; color: white; font-size: 32px; }
-        
         .smart-calc-btn.number:hover { background-color: #f0f0f0; }
         .smart-calc-btn.operator:hover { background-color: #666666; }
         .smart-calc-btn.top-op:hover { background-color: #d4d4d4; }
@@ -341,6 +339,89 @@
         <div class="a5-totals" id="a5-totals-area"></div>
         <div id="a5-settlement-area"></div>
         <div class="a5-footer">Thank you for your business!</div>
+    </div>
+</div>
+
+<!-- PDF-MATCHED SOCIAL RATE CARD TEMPLATE (HIDDEN) -->
+<div id="rate-card-container" style="position: fixed; top: 0; left: 0; opacity: 0; z-index: -9999; pointer-events: none;">
+    <div id="rate-card" style="width: 540px; background: #FDFBF7; border: 4px solid #C5A059; border-radius: 8px; padding: 35px 30px; font-family: 'Times New Roman', Times, serif; box-sizing: border-box; text-align: center; color: #2F2F2F; position: relative;">
+        
+        <!-- Top Branding -->
+        <div style="font-size: 26px; font-weight: bold; color: #2C5E3B; letter-spacing: 1px; font-family: Arial, sans-serif;">GOLECHHA</div>
+        <div style="font-size: 14px; font-weight: bold; color: #2C5E3B; letter-spacing: 4px; margin-top: 2px; font-family: Arial, sans-serif;">JEWELLERS</div>
+        <div style="font-size: 12px; color: #555; margin-top: 4px; font-style: italic;">The Name You Can Trust</div>
+        
+        <!-- Title Banner -->
+        <div style="margin-top: 20px; font-size: 24px; font-weight: bold; color: #2C5E3B; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #C5A059; display: inline-block; padding-bottom: 4px;">TODAY'S RATES</div>
+        
+        <!-- Date Badge -->
+        <div style="margin-top: 12px;">
+            <span id="rc-date" style="display: inline-block; background: #E6D5B8; border: 1px solid #C5A059; border-radius: 16px; padding: 5px 18px; font-size: 13px; color: #333; font-weight: bold; font-family: Arial, sans-serif;"></span>
+        </div>
+        
+        <!-- Rate Rows Container -->
+        <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 12px;">
+            
+            <!-- 24K Row -->
+            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
+                <div style="width: 50px; text-align: left;">
+                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#D4AF37"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+                </div>
+                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">GOLD 24K</div>
+                <div style="font-size: 22px; font-weight: bold; color: #2C5E3B; font-family: Arial, sans-serif;" id="rc-r24"></div>
+            </div>
+
+            <!-- 22K Row -->
+            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
+                <div style="width: 50px; text-align: left;">
+                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#D4AF37"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+                </div>
+                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">GOLD 22K</div>
+                <div style="font-size: 22px; font-weight: bold; color: #2C5E3B; font-family: Arial, sans-serif;" id="rc-r22"></div>
+            </div>
+
+            <!-- 20K Row -->
+            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
+                <div style="width: 50px; text-align: left;">
+                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#D4AF37"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+                </div>
+                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">GOLD 20K</div>
+                <div style="font-size: 22px; font-weight: bold; color: #2C5E3B; font-family: Arial, sans-serif;" id="rc-r20"></div>
+            </div>
+
+            <!-- Silver Row -->
+            <div style="display: flex; align-items: center; background: #FFFDF9; border: 2px solid #E6D5B8; border-radius: 8px; padding: 12px 16px;">
+                <div style="width: 50px; text-align: left;">
+                    <svg width="36" height="24" viewBox="0 0 36 24" fill="#A9A9A9"><path d="M2 18L10 22V14L2 10V18Z"/><path d="M12 22L22 18V10L12 14V22Z"/><path d="M20 8L10 4L2 8L12 12L20 8Z"/></svg>
+                </div>
+                <div style="flex-grow: 1; text-align: left; font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">SILVER</div>
+                <div style="text-align: right;">
+                    <div style="font-size: 22px; font-weight: bold; color: #333; font-family: Arial, sans-serif;" id="rc-rAg"></div>
+                    <div style="font-size: 10px; color: #666; font-family: Arial, sans-serif; letter-spacing: 0.5px;">(PER 10 GRAMS)</div>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Disclaimer -->
+        <div style="margin-top: 20px; font-size: 11px; color: #666; font-style: italic; line-height: 1.4;">
+            The rates displayed are indicative and subject to change at the time of purchase.<br>
+            Making charges and applicable GST are additional.
+        </div>
+        
+        <!-- Footer Bar -->
+        <div style="margin-top: 25px; background: #3B1C1C; color: #FFF; border-radius: 6px; padding: 12px 10px; display: flex; justify-content: space-around; align-items: center; font-size: 10px; font-family: Arial, sans-serif;">
+            <div style="max-width: 140px; text-align: left; line-height: 1.3;">
+                📍 Main Road, Mahavir Marg, Karanja Lad, 444105
+            </div>
+            <div style="max-width: 110px; text-align: center; line-height: 1.3;">
+                ⏰ Time:<br>11:00 AM to 8:00 PM
+            </div>
+            <div style="max-width: 120px; text-align: right; line-height: 1.3; font-weight: bold;">
+                📸 @golechhajewellers
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -535,7 +616,7 @@
                     </div>
                     <div class="total-row grand-final-row">
                         <span>Grand Total:</span>
-                        <span>₹<span id="grandTotalValue">0.00</span></span>
+                        <span>₹<span id="grandTotalValue">0</span></span>
                     </div>
                 </div>
 
@@ -586,6 +667,7 @@
 
                 <div class="bill-table-head">
                     <span class="urd-col item-col">Item</span>
+                    <span class="urd-col">Rate</span>
                     <span class="urd-col">GWt</span>
                     <span class="urd-col">LWt</span>
                     <span class="urd-col">Net</span>
@@ -598,6 +680,7 @@
                 <div id="urdItemsList"></div>
 
                 <div class="grand-total-amount">
+                    
                     <div class="total-row" style="color:#666; font-size:11px; justify-content:space-between; border-bottom:1px solid #E8E5F4; padding-bottom:6px; margin-bottom:6px;">
                         <span><b>GWt:</b> <span id="urdTotalGross">0.00</span>g</span>
                         <span><b>LWt:</b> <span id="urdTotalLess">0.00</span>g</span>
@@ -615,7 +698,7 @@
                     </div>
                     <div class="total-row grand-final-row" style="color:#4CAF50;">
                         <span>Grand Total:</span>
-                        <span>₹<span id="urdGrandTotalValue">0.00</span></span>
+                        <span>₹<span id="urdGrandTotalValue">0</span></span>
                     </div>
                 </div>
 
@@ -630,15 +713,15 @@
                 <div id="settlementBox" class="settlement-box hide">
                     <div class="set-row">
                         <span>Estimate Total:</span>
-                        <span id="setSaleTotal">₹0.00</span>
+                        <span id="setSaleTotal">₹0</span>
                     </div>
                     <div class="set-row" style="color: #E53935;">
                         <span>Less Old Metal:</span>
-                        <span id="setUrdTotal">- ₹0.00</span>
+                        <span id="setUrdTotal">- ₹0</span>
                     </div>
                     <div class="set-final">
                         <span>Final Amount:</span>
-                        <span id="setFinalAmount">₹0.00</span>
+                        <span id="setFinalAmount">₹0</span>
                     </div>
                     <div id="setPayStatus" style="text-align:right; font-size:11px; margin-top:2px; font-weight:bold;"></div>
                 </div>
@@ -711,7 +794,7 @@
 </footer>
 
 <script>
-    // --- SECURE CUSTOM DIALOG LOGIC ---
+    // --- CUSTOM DIALOG LOGIC ---
     function customAlert(msg) {
         document.getElementById('customDialogText').innerText = msg;
         document.getElementById('customDialogBtns').innerHTML = `<button class="custom-dialog-btn btn-ok" onclick="closeCustomDialog()">OK</button>`;
@@ -731,11 +814,10 @@
         };
     }
 
-    // NEW: Custom Prompt for quick inputs (like long-pressing GST)
     function customPrompt(title, defaultVal, onConfirm) {
         document.getElementById('customDialogText').innerHTML = `
             <div style="margin-bottom: 15px; color: #9B8AD9;">${title}</div>
-            <input type="number" id="promptInput" value="${defaultVal}" style="width: 80%; padding: 10px; font-size: 18px; text-align: center; border: 2px solid #9B8AD9; border-radius: 8px;" inputmode="decimal">
+            <input type="text" id="promptInput" value="${defaultVal}" style="width: 80%; padding: 10px; font-size: 18px; text-align: center; border: 2px solid #9B8AD9; border-radius: 8px;" inputmode="text">
         `;
         document.getElementById('customDialogBtns').innerHTML = `
             <button class="custom-dialog-btn btn-cancel" onclick="closeCustomDialog()">Cancel</button>
@@ -876,13 +958,11 @@
             window.AndroidBridge.checkForUpdate();
         } else {
             try {
-                // Clear Caches
                 if ('caches' in window) {
                     const cacheNames = await caches.keys();
                     await Promise.all(cacheNames.map(name => caches.delete(name)));
                 }
 
-                // Unregister Service Workers
                 if ('serviceWorker' in navigator) {
                     const registrations = await navigator.serviceWorker.getRegistrations();
                     for (let registration of registrations) {
@@ -944,7 +1024,6 @@
         }
     }
 
-    // --- SMART KARAT CALCULATOR ---
     function computeKaratRate(k) {
         const base = parseFloat(document.getElementById('rate24').value) || 0;
         if (k === 24) return roundToTen(base);
@@ -959,7 +1038,6 @@
         }
     }
 
-    // --- SMART URD CALCULATOR ---
     function calculateDefaultUrdRate() {
         const base = parseFloat(document.getElementById('rate24').value) || 0;
         const diffInput = String(document.getElementById('urdDiff').value).trim();
@@ -973,7 +1051,6 @@
         }
     }
 
-    // --- RATE BOARD LOGIC ---
     function updateRateBoard() {
         if(!document.getElementById('rateBoardContent')) return;
         const r24 = computeKaratRate(24);
@@ -991,7 +1068,6 @@
         `;
     }
 
-    // --- DYNAMIC METAL BOX RATE INJECTION ---
     function updateSaleBoxRates() {
         const rates = {
             '24': computeKaratRate(24),
@@ -1075,7 +1151,6 @@
         btn.addEventListener('click', function() { updateUrdMetalUI(this.getAttribute('data-val')); });
     });
 
-
     // --- PAGE 1: ESTIMATE LOGIC ---
     let currentFinalTotal = 0;
     let billItems = [];
@@ -1139,11 +1214,12 @@
             if(item.type === 'silver') { silverVal += item.total; silverWt += item.weight; }
             else { goldVal += item.total; goldWt += item.weight; }
 
-            const itemName = item.type === 'silver' ? `Sil ${index + 1}` : `${item.type}K ${index + 1}`;
-            const taxDisplay = (item.tax !== undefined && item.tax > 0) ? item.tax.toFixed(0) : '0';
+            const itemName = item.name || (item.type === 'silver' ? `Sil ${index + 1}` : `${item.type}K ${index + 1}`);
+            const taxDisplay = (item.taxPct !== undefined && item.taxPct > 0) ? `${item.taxPct}%` : '0%';
+            
             list.innerHTML += `
                 <div class="bill-item">
-                    <span class="bill-col item-col">${itemName}</span>
+                    <span class="bill-col item-col item-name-col" data-index="${index}">${itemName}</span>
                     <span class="bill-col">${item.rate}</span>
                     <span class="bill-col">${item.weight}</span>
                     <span class="bill-col">${item.make}</span>
@@ -1167,8 +1243,8 @@
             document.getElementById('gtSilverVal').innerText = silverVal.toFixed(2);
         } else { slvRow.style.display = 'none'; }
 
-        saleGrandTotalNum = Math.round((goldVal + silverVal) * 100) / 100;
-        document.getElementById('grandTotalValue').innerText = saleGrandTotalNum.toFixed(2);
+        saleGrandTotalNum = Math.round(goldVal + silverVal);
+        document.getElementById('grandTotalValue').innerText = saleGrandTotalNum.toString();
 
         if(!document.getElementById('settlementBox').classList.contains('hide')){ calculateSettlement(); }
     }
@@ -1188,10 +1264,14 @@
             const _goldVal = rateVal * _wt;
             const _mk = (_mkType === "percent") ? (_goldVal * finalMakeVal / 100) : (_mkType === "gram" ? finalMakeVal * _wt : finalMakeVal);
             const _sub = _goldVal + _mk + _stone;
-            const _gstRate = document.getElementById('applyGstCb').checked ? (parseFloat(document.getElementById('gstPct').value) / 100) : 0;
-            const _tax = _sub * _gstRate;
+            
+            const _gstPctValue = document.getElementById('applyGstCb').checked ? parseFloat(document.getElementById('gstPct').value || "0") : 0;
+            const _tax = _sub * (_gstPctValue / 100);
+            
+            const defaultName = typeVal === 'silver' ? `Sil ${billItems.length + 1}` : `${typeVal}K ${billItems.length + 1}`;
 
             billItems.push({
+                name: defaultName,
                 type: typeVal,
                 makeType: _mkType,
                 rate: rateVal,
@@ -1199,6 +1279,7 @@
                 make: finalMakeVal,
                 stone: _stone,
                 tax: _tax,
+                taxPct: _gstPctValue,
                 hasGst: document.getElementById('applyGstCb').checked,
                 total: currentFinalTotal
             });
@@ -1251,7 +1332,6 @@
         });
     });
 
-
     // --- PAGE 2: URD LOGIC ---
     let currentUrdTotal = 0;
     let urdBillItems = [];
@@ -1269,7 +1349,9 @@
     function calculateURD() {
         const wt = parseFloat(document.getElementById('urdWt').value) || 0;
         const lessWt = parseFloat(document.getElementById('urdLessWt').value) || 0;
-        const pct = parseFloat(document.getElementById('urdPct').value) || 0;
+        const pctInput = document.getElementById('urdPct').value;
+        
+        const pct = pctInput === "" ? 100 : parseFloat(pctInput) || 0;
         const rate = parseFloat(document.getElementById('urdRate').value) || 0; 
 
         const netWt = wt - lessWt;
@@ -1313,10 +1395,11 @@
             if(item.type === 'silver') { silverVal += item.total; silverWt += item.netWt; }
             else { goldVal += item.total; goldWt += item.netWt; }
 
-            const itemName = item.type === 'silver' ? `Slv URD${index + 1}` : `Gld URD${index + 1}`;
+            const itemName = item.name || (item.type === 'silver' ? `Slv URD${index + 1}` : `Gld URD${index + 1}`);
             list.innerHTML += `
                 <div class="bill-item">
-                    <span class="urd-col item-col">${itemName}</span>
+                    <span class="urd-col item-col item-name-col" data-index="${index}">${itemName}</span>
+                    <span class="urd-col">${item.rate}</span>
                     <span class="urd-col">${item.gross.toFixed(2)}</span>
                     <span class="urd-col">${item.less.toFixed(2)}</span>
                     <span class="urd-col">${item.netWt.toFixed(2)}</span>
@@ -1345,8 +1428,8 @@
             document.getElementById('urdSilverVal').innerText = silverVal.toFixed(2);
         } else { slvRow.style.display = 'none'; }
 
-        urdGrandTotalNum = Math.round((goldVal + silverVal) * 100) / 100;
-        document.getElementById('urdGrandTotalValue').innerText = urdGrandTotalNum.toFixed(2);
+        urdGrandTotalNum = Math.round(goldVal + silverVal);
+        document.getElementById('urdGrandTotalValue').innerText = urdGrandTotalNum.toString();
 
         if(!document.getElementById('settlementBox').classList.contains('hide')){ calculateSettlement(); }
     }
@@ -1355,12 +1438,16 @@
         if (currentUrdTotal > 0) {
             const wt = parseFloat(document.getElementById('urdWt').value || "0");
             const lessWt = parseFloat(document.getElementById('urdLessWt').value || "0");
-            const pct = parseFloat(document.getElementById('urdPct').value || "0");
+            const pctInput = document.getElementById('urdPct').value;
+            const pct = pctInput === "" ? 100 : parseFloat(pctInput) || 0;
             const netWt = wt - lessWt;
             const fineWt = netWt * (pct / 100);
             const metal = document.getElementById('urdMetalType').value;
+            const rate = parseFloat(document.getElementById('urdRate').value) || 0;
+            
+            const defaultName = metal === 'silver' ? `Slv URD${urdBillItems.length + 1}` : `Gld URD${urdBillItems.length + 1}`;
 
-            urdBillItems.push({ type: metal, netWt: netWt, gross: wt, less: lessWt, pct: pct, fine: fineWt, total: currentUrdTotal });
+            urdBillItems.push({ name: defaultName, type: metal, rate: rate, netWt: netWt, gross: wt, less: lessWt, pct: pct, fine: fineWt, total: currentUrdTotal });
             renderUrdBillPanel();
             
             document.getElementById('urdWt').value = "";
@@ -1384,6 +1471,7 @@
             document.getElementById('urdWt').value = item.gross;
             document.getElementById('urdLessWt').value = item.less;
             document.getElementById('urdPct').value = item.pct;
+            document.getElementById('urdRate').value = item.rate;
 
             urdBillItems.splice(index, 1);
             renderUrdBillPanel();
@@ -1399,6 +1487,43 @@
             renderUrdBillPanel(); 
         });
     });
+
+    // --- LONG PRESS RENAME LOGIC ---
+    function setupListLongPress(listId, arrayRef, renderFunc) {
+        const listEl = document.getElementById(listId);
+        let holdTimer;
+        let isHolding = false;
+
+        const startHold = (e) => {
+            const itemSpan = e.target.closest('.item-name-col');
+            if (!itemSpan) return;
+            
+            isHolding = true;
+            const index = parseInt(itemSpan.getAttribute('data-index'));
+            
+            holdTimer = setTimeout(() => {
+                isHolding = false;
+                customPrompt("Rename Item", arrayRef[index].name || "", (newVal) => {
+                    if (newVal !== null && newVal.trim() !== "") {
+                        arrayRef[index].name = newVal.trim();
+                        renderFunc();
+                    }
+                });
+            }, 500);
+        };
+
+        const cancelHold = () => {
+            clearTimeout(holdTimer);
+            isHolding = false;
+        };
+
+        listEl.addEventListener('touchstart', startHold, {passive: true});
+        listEl.addEventListener('touchend', cancelHold);
+        listEl.addEventListener('touchmove', cancelHold);
+        listEl.addEventListener('mousedown', startHold);
+        listEl.addEventListener('mouseup', cancelHold);
+        listEl.addEventListener('mouseleave', cancelHold);
+    }
 
     // --- HISTORY LOGIC ---
     let appHistory = JSON.parse(localStorage.getItem('appHistory')) || [];
@@ -1461,7 +1586,7 @@
                     </div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-weight:bold; color:darkred; font-size:15px;">₹${Math.abs(finalAmt).toFixed(2)}</div>
+                    <div style="font-weight:bold; color:darkred; font-size:15px;">₹${Math.abs(finalAmt).toFixed(0)}</div>
                     <span class="history-delete-btn" data-index="${i}" style="color:#E53935; display:inline-block; margin-top:6px; cursor:pointer; font-size:12px; font-weight:bold; padding:4px 8px; background:#FFF; border:1px solid #E53935; border-radius:4px;">Delete</span>
                 </div>
             </div>`;
@@ -1521,7 +1646,6 @@
         });
     });
 
-
     // --- SHARING LOGIC ---
     async function handleTextShare(shareText, title) {
         try {
@@ -1537,8 +1661,8 @@
         if (billItems.length === 0) return;
         let shareText = "🧾 *Estimate Quotation*\n------------------------\n";
         billItems.forEach((item, index) => {
-            const itemName = item.type === 'silver' ? `Silver ${index + 1}` : `${item.type}K ${index + 1}`;
-            const taxAmt = (item.tax !== undefined && item.tax > 0) ? ` | Tax: ₹${item.tax.toFixed(0)}` : '';
+            const itemName = item.name || (item.type === 'silver' ? `Silver ${index + 1}` : `${item.type}K ${index + 1}`);
+            const taxAmt = (item.taxPct !== undefined && item.taxPct > 0) ? ` | Tax: ${item.taxPct}%` : '';
             shareText += `*${itemName}*\nRate: ₹${item.rate}/g | Wt: ${item.weight}g | Mk: ${item.make} | St: ₹${item.stone}${taxAmt}\nTotal: ₹${item.total.toFixed(0)}\n------------------------\n`;
         });
 
@@ -1547,7 +1671,7 @@
 
         if (parseFloat(goldWt) > 0) shareText += `\n🥇 *Gold Total Wt: ${goldWt}g*`;
         if (parseFloat(slvWt) > 0) shareText += `\n🥈 *Silver Total Wt: ${slvWt}g*`;
-        shareText += `\n💰 *Grand Total: ₹${saleGrandTotalNum.toFixed(2)}*\n\nThank you for visiting!`;
+        shareText += `\n💰 *Grand Total: ₹${saleGrandTotalNum.toString()}*\n\nThank you for visiting!`;
 
         handleTextShare(shareText, 'Estimate Quotation');
     });
@@ -1556,8 +1680,8 @@
         if (urdBillItems.length === 0) return;
         let shareText = "⚖️ *Old Metal (URD) Receipt*\n------------------------\n";
         urdBillItems.forEach((item, index) => {
-            const itemName = item.type === 'silver' ? `Slv Item ${index + 1}` : `Gld Item ${index + 1}`;
-            shareText += `*${itemName}* | GWt: ${item.gross}g | LWt: ${item.less}g | Net: ${item.netWt.toFixed(2)}g\nFine: ${item.fine.toFixed(2)}g | Purity: ${item.pct}% | Value: ₹${item.total.toFixed(0)}\n------------------------\n`;
+            const itemName = item.name || (item.type === 'silver' ? `Slv Item ${index + 1}` : `Gld Item ${index + 1}`);
+            shareText += `*${itemName}* | Rate: ₹${item.rate}/g\nGWt: ${item.gross}g | LWt: ${item.less}g | Net: ${item.netWt.toFixed(2)}g\nFine: ${item.fine.toFixed(2)}g | Purity: ${item.pct}% | Value: ₹${item.total.toFixed(0)}\n------------------------\n`;
         });
 
         shareText += `\n⚖️ *Totals:* GWt: ${document.getElementById('urdTotalGross').innerText}g | LWt: ${document.getElementById('urdTotalLess').innerText}g | Net: ${document.getElementById('urdTotalNet').innerText}g | Fine: ${document.getElementById('urdTotalFine').innerText}g\n`;
@@ -1567,13 +1691,13 @@
 
         if (parseFloat(goldWt) > 0) shareText += `\n🥇 *Gold Val Wt: ${goldWt}g*`;
         if (parseFloat(slvWt) > 0) shareText += `\n🥈 *Silver Val Wt: ${slvWt}g*`;
-        shareText += `\n💰 *URD Total: ₹${urdGrandTotalNum.toFixed(2)}*\n`;
+        shareText += `\n💰 *URD Total: ₹${urdGrandTotalNum.toString()}*\n`;
 
         if (!document.getElementById('settlementBox').classList.contains('hide')) {
-            const finalDiff = saleGrandTotalNum - urdGrandTotalNum;
-            shareText += `\n🧾 Estimate Total: ₹${saleGrandTotalNum.toFixed(2)}`;
-            shareText += `\n📉 Less Old Metal: -₹${urdGrandTotalNum.toFixed(2)}`;
-            shareText += `\n\n📌 *Final Settlement: ₹${Math.abs(finalDiff).toFixed(2)}*`;
+            const finalDiff = Math.round(saleGrandTotalNum - urdGrandTotalNum);
+            shareText += `\n🧾 Estimate Total: ₹${saleGrandTotalNum.toString()}`;
+            shareText += `\n📉 Less Old Metal: -₹${urdGrandTotalNum.toString()}`;
+            shareText += `\n\n📌 *Final Settlement: ₹${Math.abs(finalDiff).toString()}*`;
             if(finalDiff > 0) shareText += " (Customer Pays)\n";
             else if (finalDiff < 0) shareText += " (Shop Pays Customer)\n";
             else shareText += " (Fully Settled)\n";
@@ -1605,8 +1729,8 @@
             thead.innerHTML = `<th>Item</th><th>Rate</th><th>Wt</th><th>Mk</th><th>St</th><th>Tax</th><th class="right">Total</th>`;
 
             billItems.forEach((item, index) => {
-                const name = item.type === 'silver' ? `Silver ${index+1}` : `${item.type}K ${index+1}`;
-                const a5Tax = (item.tax !== undefined && item.tax > 0) ? `₹${item.tax.toFixed(0)}` : '₹0';
+                const name = item.name || (item.type === 'silver' ? `Silver ${index+1}` : `${item.type}K ${index+1}`);
+                const a5Tax = (item.taxPct !== undefined && item.taxPct > 0) ? `${item.taxPct}%` : '0%';
                 tbody.innerHTML += `<tr><td>${name}</td><td>₹${item.rate}</td><td>${item.weight}g</td><td>${item.make}</td><td>₹${item.stone}</td><td>${a5Tax}</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
             });
 
@@ -1616,16 +1740,16 @@
             if (parseFloat(document.getElementById('gtSilverWt').innerText) > 0) {
                 totalsArea.innerHTML += `<div class="a5-row" style="color:#607D8B;"><span>Silver Total (${document.getElementById('gtSilverWt').innerText}g):</span><span>₹${document.getElementById('gtSilverVal').innerText}</span></div>`;
             }
-            totalsArea.innerHTML += `<div class="a5-row a5-grand"><span>Grand Total:</span><span>₹${saleGrandTotalNum.toFixed(2)}</span></div>`;
+            totalsArea.innerHTML += `<div class="a5-row a5-grand"><span>Grand Total:</span><span>₹${saleGrandTotalNum.toString()}</span></div>`;
         }
         else if (type === 'urd') {
             currentImageFilename = "URD_Receipt.png";
             document.getElementById('a5-doc-title').innerText = "Old Metal (URD) Receipt";
-            thead.innerHTML = `<th>Item</th><th>GWt</th><th>LWt</th><th>Net</th><th>Fine</th><th>%</th><th class="right">Total</th>`;
+            thead.innerHTML = `<th>Item</th><th>Rate</th><th>GWt</th><th>LWt</th><th>Net</th><th>Fine</th><th>%</th><th class="right">Total</th>`;
 
             urdBillItems.forEach((item, index) => {
-                const name = item.type === 'silver' ? `Slv URD ${index+1}` : `Gld URD ${index+1}`;
-                tbody.innerHTML += `<tr><td>${name}</td><td>${item.gross.toFixed(2)}g</td><td>${item.less.toFixed(2)}g</td><td>${item.netWt.toFixed(2)}g</td><td>${item.fine.toFixed(2)}g</td><td>${item.pct}%</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
+                const name = item.name || (item.type === 'silver' ? `Slv URD ${index+1}` : `Gld URD ${index+1}`);
+                tbody.innerHTML += `<tr><td>${name}</td><td>₹${item.rate}</td><td>${item.gross.toFixed(2)}g</td><td>${item.less.toFixed(2)}g</td><td>${item.netWt.toFixed(2)}g</td><td>${item.fine.toFixed(2)}g</td><td>${item.pct}%</td><td class="right">₹${item.total.toFixed(0)}</td></tr>`;
             });
 
             totalsArea.innerHTML = `
@@ -1640,16 +1764,16 @@
             if (parseFloat(document.getElementById('urdSilverWt').innerText) > 0) {
                 totalsArea.innerHTML += `<div class="a5-row" style="color:#607D8B;"><span>Silver URD Value (${document.getElementById('urdSilverWt').innerText}g):</span><span>₹${document.getElementById('urdSilverVal').innerText}</span></div>`;
             }
-            totalsArea.innerHTML += `<div class="a5-row a5-grand" style="color:#4CAF50;"><span>URD Total:</span><span>₹${urdGrandTotalNum.toFixed(2)}</span></div>`;
+            totalsArea.innerHTML += `<div class="a5-row a5-grand" style="color:#4CAF50;"><span>URD Total:</span><span>₹${urdGrandTotalNum.toString()}</span></div>`;
 
             if (!document.getElementById('settlementBox').classList.contains('hide')) {
-                const finalDiff = saleGrandTotalNum - urdGrandTotalNum;
+                const finalDiff = Math.round(saleGrandTotalNum - urdGrandTotalNum);
                 let status = finalDiff > 0 ? "(Customer Pays)" : (finalDiff < 0 ? "(Shop Pays)" : "");
                 settlementArea.innerHTML = `
                     <div class="a5-settlement">
-                        <div class="a5-row"><span>Estimate Total:</span><span>₹${saleGrandTotalNum.toFixed(2)}</span></div>
-                        <div class="a5-row" style="color:#E53935;"><span>Less Old Metal:</span><span>-₹${urdGrandTotalNum.toFixed(2)}</span></div>
-                        <div class="a5-row a5-grand" style="color:#9B8AD9;"><span>Final Amount:</span><span>₹${Math.abs(finalDiff).toFixed(2)} ${status}</span></div>
+                        <div class="a5-row"><span>Estimate Total:</span><span>₹${saleGrandTotalNum.toString()}</span></div>
+                        <div class="a5-row" style="color:#E53935;"><span>Less Old Metal:</span><span>-₹${urdGrandTotalNum.toString()}</span></div>
+                        <div class="a5-row a5-grand" style="color:#9B8AD9;"><span>Final Amount:</span><span>₹${Math.abs(finalDiff).toString()} ${status}</span></div>
                     </div>`;
             }
         }
@@ -1663,6 +1787,37 @@
 
         } catch (e) {
             customAlert("Could not generate image.");
+        }
+    }
+
+    // --- PROFESSIONAL RATE CARD IMAGE GENERATION ---
+    async function generateRateCardImage() {
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'LONG', year: 'numeric' }).toUpperCase();
+        
+        const r24 = computeKaratRate(24);
+        const r22 = computeKaratRate(22);
+        const r20 = computeKaratRate(20);
+        const rAg = parseFloat(document.getElementById('silverRateSetting').value) || 0;
+        
+        const rAg10Grams = rAg * 10;
+
+        document.getElementById('rc-date').innerText = dateStr;
+        document.getElementById('rc-r24').innerText = "₹ " + r24.toLocaleString('en-IN');
+        document.getElementById('rc-r22').innerText = "₹ " + r22.toLocaleString('en-IN');
+        document.getElementById('rc-r20').innerText = "₹ " + r20.toLocaleString('en-IN');
+        document.getElementById('rc-rAg').innerText = "₹ " + rAg10Grams.toLocaleString('en-IN');
+
+        currentImageFilename = "Golechha_Jewellers_Rates.png";
+
+        try {
+            const cardElement = document.getElementById('rate-card');
+            const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
+            const imgData = canvas.toDataURL("image/png");
+
+            document.getElementById('generatedImageResult').src = imgData;
+            document.getElementById('imageModal').classList.add('show');
+        } catch (e) {
+            customAlert("Could not generate rate card image.");
         }
     }
 
@@ -1681,14 +1836,9 @@
                 const blob = await response.blob();
                 const file = new File([blob], currentImageFilename, { type: blob.type });
                 
-                // Attempt native Web Share API with files
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        title: 'Quotation',
-                        files: [file]
-                    });
+                    await navigator.share({ title: 'Quotation', files: [file] });
                 } else {
-                    // Fallback to downloading
                     const a = document.createElement('a');
                     a.href = dataUrl;
                     a.download = currentImageFilename;
@@ -1696,7 +1846,6 @@
                 }
             } catch (err) {
                 console.error("Error sharing image:", err);
-                // Last fallback to downloading
                 const a = document.createElement('a');
                 a.href = dataUrl;
                 a.download = currentImageFilename;
@@ -1709,11 +1858,11 @@
     function calculateSettlement() {
         document.getElementById('settlementBox').classList.remove('hide');
 
-        document.getElementById('setSaleTotal').innerText = `₹${saleGrandTotalNum.toFixed(2)}`;
-        document.getElementById('setUrdTotal').innerText = `- ₹${urdGrandTotalNum.toFixed(2)}`;
+        document.getElementById('setSaleTotal').innerText = `₹${saleGrandTotalNum.toString()}`;
+        document.getElementById('setUrdTotal').innerText = `- ₹${urdGrandTotalNum.toString()}`;
 
-        const finalDiff = saleGrandTotalNum - urdGrandTotalNum;
-        document.getElementById('setFinalAmount').innerText = `₹${Math.abs(finalDiff).toFixed(2)}`;
+        const finalDiff = Math.round(saleGrandTotalNum - urdGrandTotalNum);
+        document.getElementById('setFinalAmount').innerText = `₹${Math.abs(finalDiff).toString()}`;
 
         const statusEl = document.getElementById('setPayStatus');
         if(finalDiff > 0) {
@@ -1761,9 +1910,7 @@
         parsed = parsed.replace(/\/\s*(\d+(?:\.\d+)?)%/g, '/($1/100)');
         parsed = parsed.replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
         
-        // Security check: Only allow math characters before eval
         if (!/^[0-9+\-*/(). ]+$/.test(parsed)) return 0;
-        
         return eval(parsed);
     }
 
@@ -1842,11 +1989,10 @@
         }
     }
 
-
     // --- SETUP LISTENERS ---
     window.addEventListener('DOMContentLoaded', () => {
         loadSettings();
-        scSaveAndUpdate(); // Init smart calc
+        scSaveAndUpdate(); 
 
         updateSaleMetalUI(document.getElementById('metalType').value);
 
@@ -1934,17 +2080,41 @@
         calculateURD(); 
         updateRateBoard();
 
-        // ============================================
-        // LONG PRESS TO EDIT GST LOGIC
-        // ============================================
-        let holdTimer;
-        let longPressFired = false;
+        // LONG PRESS RATE BOARD TO GENERATE PDF-MATCHED IMAGE CARD
+        let holdTimerRates;
+        const rateBoardEl = document.getElementById('rateBoardContent');
+
+        const startHoldRates = (e) => {
+            holdTimerRates = setTimeout(() => {
+                generateRateCardImage();
+            }, 500); 
+        };
+
+        const cancelHoldRates = () => {
+            clearTimeout(holdTimerRates);
+        };
+
+        if (rateBoardEl) {
+            rateBoardEl.addEventListener('touchstart', startHoldRates, {passive: true});
+            rateBoardEl.addEventListener('touchend', cancelHoldRates);
+            rateBoardEl.addEventListener('touchmove', cancelHoldRates);
+            rateBoardEl.addEventListener('mousedown', startHoldRates);
+            rateBoardEl.addEventListener('mouseup', cancelHoldRates);
+            rateBoardEl.addEventListener('mouseleave', cancelHoldRates);
+        }
+
+        // SETUP LONG PRESS EVENTS FOR RENAMING AND GST
+        setupListLongPress('billItemsList', billItems, renderBillPanel);
+        setupListLongPress('urdItemsList', urdBillItems, renderUrdBillPanel);
+
+        let holdTimerGst;
+        let longPressFiredGst = false;
         const gstLabel = document.getElementById('gstLabelContainer');
 
-        const startHold = () => {
-            longPressFired = false;
-            holdTimer = setTimeout(() => {
-                longPressFired = true; // Mark as long press so click doesn't toggle checkbox
+        const startHoldGst = () => {
+            longPressFiredGst = false;
+            holdTimerGst = setTimeout(() => {
+                longPressFiredGst = true; 
                 const currentGst = document.getElementById('gstPct').value;
                 
                 customPrompt("Edit GST Percentage (%)", currentGst, (newVal) => {
@@ -1954,24 +2124,22 @@
                         calculateGold();
                     }
                 });
-            }, 500); // 500ms long press delay
+            }, 500); 
         };
 
-        const cancelHold = () => {
-            clearTimeout(holdTimer);
+        const cancelHoldGst = () => {
+            clearTimeout(holdTimerGst);
         };
 
-        // Touch & Mouse listeners for starting/stopping the timer
-        gstLabel.addEventListener('touchstart', startHold, {passive: true});
-        gstLabel.addEventListener('touchend', cancelHold);
-        gstLabel.addEventListener('touchmove', cancelHold);
-        gstLabel.addEventListener('mousedown', startHold);
-        gstLabel.addEventListener('mouseup', cancelHold);
-        gstLabel.addEventListener('mouseleave', cancelHold);
+        gstLabel.addEventListener('touchstart', startHoldGst, {passive: true});
+        gstLabel.addEventListener('touchend', cancelHoldGst);
+        gstLabel.addEventListener('touchmove', cancelHoldGst);
+        gstLabel.addEventListener('mousedown', startHoldGst);
+        gstLabel.addEventListener('mouseup', cancelHoldGst);
+        gstLabel.addEventListener('mouseleave', cancelHoldGst);
 
-        // Prevent the checkbox from toggling if it was a long press
         gstLabel.addEventListener('click', (e) => {
-            if (longPressFired) {
+            if (longPressFiredGst) {
                 e.preventDefault();
                 e.stopPropagation();
             }
