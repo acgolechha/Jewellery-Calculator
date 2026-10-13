@@ -120,7 +120,7 @@
         .input-row label { margin-top: 0; }
 
         .metal-selector { display: flex; gap: 6px; margin-top: 6px; margin-bottom: 4px; }
-        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; transition: 0.2s; line-height: 1.2; }
+        .metal-btn { flex: 1; padding: 8px 0; background: #FBFAFF; border: 1px solid #E8E5F4; border-radius: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #666; transition: 0.2s; line-height: 1.2; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
         .metal-btn.active { background: #9B8AD9; color: #FFF; border-color: #9B8AD9; }
 
         .set-mk-btn { flex: 1; padding: 6px 0; background: #E8E5F4; color: #666; font-size: 11px; font-weight: bold; text-align: center; cursor: pointer; border-radius: 4px; transition: 0.2s; }
@@ -202,6 +202,8 @@
         .btn-cancel { background: #E8E5F4; color: #666; }
         .btn-confirm { background: #E53935; color: #FFF; }
         .btn-ok { background: #9B8AD9; color: #FFF; }
+        .btn-minus { background: #E53935; color: #FFF; }
+        .btn-plus { background: #4CAF50; color: #FFF; }
 
         #a5-template-container { position: absolute; top: -9999px; left: -9999px; }
         .a5-paper { width: 595px; min-height: 842px; background: white; padding: 40px; box-sizing: border-box; font-family: Arial, sans-serif; color: #000; border: 1px solid #ccc; }
@@ -215,7 +217,8 @@
         .a5-totals { border-top: 2px solid #9B8AD9; padding-top: 15px; }
         .a5-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px; }
         .a5-grand { font-size: 22px; font-weight: bold; color: darkred; margin-top: 10px; border-top: 1px dashed #ccc; padding-top: 15px; }
-        .a5-footer { margin-top: 60px; text-align: center; font-size: 14px; color: #888; border-top: 1px solid #eee; padding-top: 20px;}
+        .a5-terms { margin-top: 50px; text-align: left; font-size: 10px; line-height: 1.6; color: #b5b5b5; border-top: 1px solid #eee; padding-top: 12px; }
+        .a5-terms-title { font-weight: bold; margin-bottom: 3px; }
         .a5-settlement { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 2px dashed #9B8AD9; border-radius: 8px; }
 
         /* SMART PERCENTAGE CALCULATOR */
@@ -537,7 +540,12 @@
         </table>
         <div class="a5-totals" id="a5-totals-area"></div>
         <div id="a5-settlement-area"></div>
-        <div class="a5-footer">Thank you for your business!</div>
+        <div class="a5-terms">
+            <div class="a5-terms-title">Terms &amp; Conditions</div>
+            <div>1. Quotations are generally valid for a short window.</div>
+            <div>2. Final billing uses the live metal rate on the day of actual payment or delivery, not the rate on the estimate date.</div>
+            <div>3. Subject to changes without prior notice.</div>
+        </div>
     </div>
 </div>
 
@@ -752,7 +760,7 @@
                 <div style="flex: 0.9; display: flex; gap: 8px;">
                     <div style="flex: 1;">
                         <label style="margin-bottom:4px; font-size:11px; color:#9B8AD9;">Def MK:</label>
-                        <input type="text" id="quickDefMk" placeholder="-" readonly tabindex="-1" style="margin-top:0; padding:8px 4px; text-align:center; background:#E8E5F4; border-color:#ccc; color:#888; pointer-events:none;">
+                        <input type="text" id="quickDefMk" placeholder="-" readonly tabindex="-1" style="margin-top:0; padding:8px 4px; text-align:center; background:#E8E5F4; border-color:#9B8AD9; color:#666; cursor:pointer; font-weight:bold;">
                     </div>
                     <div style="flex: 1;">
                         <label id="makingLabel" style="margin-bottom:4px;"><span id="makeLabelText">Temp (₹/g):</span></label>
@@ -1163,6 +1171,25 @@
         }
     });
 
+    // --- MANUAL RATE ADJUSTMENT (+10 / -10 via long-press on metal rate box) ---
+    let rateOffsets = { '24': 0, '22': 0, '20': 0, '18': 0 };
+    try {
+        const storedOffsets = JSON.parse(localStorage.getItem('rateOffsets'));
+        if (storedOffsets && typeof storedOffsets === 'object') {
+            Object.keys(rateOffsets).forEach(k => { rateOffsets[k] = parseFloat(storedOffsets[k]) || 0; });
+        }
+    } catch (e) { }
+
+    function saveRateOffsets() {
+        localStorage.setItem('rateOffsets', JSON.stringify(rateOffsets));
+    }
+
+    function resetRateOffsets(karat) {
+        if (karat) { rateOffsets[karat] = 0; }
+        else { Object.keys(rateOffsets).forEach(k => rateOffsets[k] = 0); }
+        saveRateOffsets();
+    }
+
     function saveAllRates() {
         const settingsInputs = [
             'rate24', 'urdDiff', 'pct22', 'pct20', 'pct18', 'gstPct', 'silverRateSetting', 
@@ -1209,15 +1236,16 @@
 
     function computeKaratRate(k) {
         const base = parseFloat(document.getElementById('rate24').value) || 0;
-        if (k === 24) return roundToTen(base);
+        const offset = rateOffsets[String(k)] || 0;
+        if (k === 24) return roundToTen(base) + offset;
         
         const str = String(document.getElementById('pct' + k).value).trim();
         
         if (str.endsWith('.')) {
-            return roundToTen(parseFloat(str) || 0);
+            return roundToTen(parseFloat(str) || 0) + offset;
         } else {
             let pct = parseFloat(str.replace('%', '')) || 0;
-            return roundToTen(base * (pct / 100));
+            return roundToTen(base * (pct / 100)) + offset;
         }
     }
 
@@ -1274,6 +1302,26 @@
         });
     }
 
+    // Applies the default making type/value of the current metal into the Temp MK box
+    function applyDefaultMk() {
+        const val = document.getElementById('metalType').value;
+        const settingTypeMap = { '24': 'defMkType24', '22': 'defMkType22', '20': 'defMkType20', '18': 'defMkType18', 'silver': 'defMkTypeSil' };
+        const settingValMap = { '24': 'defMkVal24', '22': 'defMkVal22', '20': 'defMkVal20', '18': 'defMkVal18', 'silver': 'defMkValSil' };
+
+        const defaultType = document.getElementById(settingTypeMap[val]).value;
+        const defaultVal = document.getElementById(settingValMap[val]).value;
+
+        document.getElementById('makingType').value = defaultType;
+        let unitTxt = defaultType === 'percent' ? '(%)' : (defaultType === 'gram' ? '(₹/g)' : '(₹/pc)');
+        document.getElementById('makeLabelText').innerText = 'Temp ' + unitTxt + ':';
+        document.querySelectorAll('#makingTypeSelector .metal-btn').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-value') === defaultType);
+        });
+
+        document.getElementById('makingValue').value = defaultVal;
+        calculateGold();
+    }
+
     function updateSaleMetalUI(val) {
         document.getElementById('metalType').value = val;
         
@@ -1315,6 +1363,92 @@
     document.querySelectorAll('#saleMetalSelector .metal-btn').forEach(btn => {
         btn.addEventListener('click', function() { updateSaleMetalUI(this.getAttribute('data-val')); });
     });
+
+    // --- LONG-PRESS ON METAL RATE BOX => +10 / -10 DIALOG ---
+    function getDisplayedRate(val) {
+        if (val === 'silver') {
+            return parseFloat(document.getElementById('silverRateInput').value) || parseFloat(document.getElementById('silverRateSetting').value) || 0;
+        }
+        return computeKaratRate(parseInt(val));
+    }
+
+    function showRateAdjustDialog(val) {
+        const isSilver = val === 'silver';
+        const label = isSilver ? 'Silver' : val + 'K';
+        const step = isSilver ? 1 : 10;
+
+        function renderDialog() {
+            document.getElementById('customDialogText').innerHTML = `
+                <div style="color:#9B8AD9; margin-bottom:8px;">Adjust ${label} Rate</div>
+                <div style="font-size:26px; color:#2F2F2F;">₹${getDisplayedRate(val)}</div>
+            `;
+            document.getElementById('customDialogBtns').innerHTML = `
+                <button class="custom-dialog-btn btn-minus" id="rateMinusBtn">− ${step}</button>
+                <button class="custom-dialog-btn btn-plus" id="ratePlusBtn">+ ${step}</button>
+                <button class="custom-dialog-btn btn-cancel" onclick="closeCustomDialog()">Done</button>
+            `;
+            document.getElementById('rateMinusBtn').onclick = () => adjustRate(-step);
+            document.getElementById('ratePlusBtn').onclick = () => adjustRate(step);
+        }
+
+        function adjustRate(delta) {
+            if (isSilver) {
+                const current = parseFloat(document.getElementById('silverRateSetting').value) || 0;
+                const newVal = Math.max(0, current + delta);
+                document.getElementById('silverRateSetting').value = newVal;
+                document.getElementById('silverRateInput').value = newVal;
+                saveAllRates();
+                updateUrdRateSystem();
+            } else {
+                rateOffsets[val] = (rateOffsets[val] || 0) + delta;
+                saveRateOffsets();
+                updateRateBoard();
+            }
+            updateSaleBoxRates();
+            calculateGold();
+            renderDialog();
+        }
+
+        renderDialog();
+        document.getElementById('customDialogOverlay').classList.add('show');
+    }
+
+    function setupRateLongPress() {
+        const selector = document.getElementById('saleMetalSelector');
+        let holdTimer;
+        let longPressFired = false;
+        let holdVal = null;
+
+        const startHold = (e) => {
+            const btn = e.target.closest('.metal-btn');
+            if (!btn) return;
+            longPressFired = false;
+            holdVal = btn.getAttribute('data-val');
+            holdTimer = setTimeout(() => {
+                longPressFired = true;
+                showRateAdjustDialog(holdVal);
+            }, 500);
+        };
+
+        const cancelHold = () => { clearTimeout(holdTimer); };
+
+        selector.addEventListener('touchstart', startHold, {passive: true});
+        selector.addEventListener('touchend', cancelHold);
+        selector.addEventListener('touchmove', cancelHold);
+        selector.addEventListener('mousedown', startHold);
+        selector.addEventListener('mouseup', cancelHold);
+        selector.addEventListener('mouseleave', cancelHold);
+        selector.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Swallow the click that follows a long press so the metal doesn't get re-selected
+        selector.addEventListener('click', (e) => {
+            if (longPressFired) {
+                e.preventDefault();
+                e.stopPropagation();
+                longPressFired = false;
+            }
+        }, true);
+    }
 
     function updateUrdMetalUI(val) {
         document.getElementById('urdMetalType').value = val;
@@ -1733,7 +1867,8 @@
                 urdDiff: document.getElementById('urdDiff').value,
                 pct22: document.getElementById('pct22').value,
                 pct20: document.getElementById('pct20').value,
-                pct18: document.getElementById('pct18').value
+                pct18: document.getElementById('pct18').value,
+                rateOffsets: JSON.parse(JSON.stringify(rateOffsets))
             }
         };
 
@@ -1802,6 +1937,11 @@
                 document.getElementById('pct20').value = record.savedRates.pct20;
                 document.getElementById('pct18').value = record.savedRates.pct18;
                 document.getElementById('silverRateInput').value = record.savedRates.silverRateSetting;
+
+                // Restore the +10/-10 adjustments that were active when the bill was saved
+                const savedOffsets = record.savedRates.rateOffsets || {};
+                Object.keys(rateOffsets).forEach(k => { rateOffsets[k] = parseFloat(savedOffsets[k]) || 0; });
+                saveRateOffsets();
                 
                 saveAllRates();
                 updateSaleBoxRates();
@@ -1854,7 +1994,7 @@
 
         if (parseFloat(goldWt) > 0) shareText += `\n🥇 *Gold Total Wt: ${goldWt}g*`;
         if (parseFloat(slvWt) > 0) shareText += `\n🥈 *Silver Total Wt: ${slvWt}g*`;
-        shareText += `\n💰 *Grand Total: ₹${saleGrandTotalNum.toString()}*\n\nThank you for visiting!`;
+        shareText += `\n💰 *Grand Total: ₹${saleGrandTotalNum.toString()}*\n\nSubject to changes without prior notice`;
 
         handleTextShare(shareText, 'Estimate Quotation');
     });
@@ -1901,7 +2041,7 @@
         const totalsArea = document.getElementById('a5-totals-area');
         const settlementArea = document.getElementById('a5-settlement-area');
 
-        const dateStr = new Date().toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+        const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
         document.getElementById('a5-doc-date').innerText = "Date: " + dateStr;
 
         tbody.innerHTML = ''; totalsArea.innerHTML = ''; settlementArea.innerHTML = '';
@@ -2190,6 +2330,12 @@
                 el.addEventListener('input', (e) => {
                     if (id === 'silverRateInput') document.getElementById('silverRateSetting').value = e.target.value;
                     if (id === 'silverRateSetting') document.getElementById('silverRateInput').value = e.target.value;
+
+                    // Typing a new base rate / percentage clears the manual +10/-10 adjustment
+                    if (id === 'rate24') resetRateOffsets();
+                    if (id === 'pct22') resetRateOffsets('22');
+                    if (id === 'pct20') resetRateOffsets('20');
+                    if (id === 'pct18') resetRateOffsets('18');
                     
                     saveAllRates(); 
                     
@@ -2221,6 +2367,9 @@
         });
 
         document.getElementById('applyGstCb').addEventListener('change', calculateGold);
+
+        // TAP "Def MK" => Temp MK changes into the default making charge (value + type)
+        document.getElementById('quickDefMk').addEventListener('click', applyDefaultMk);
 
         document.getElementById('urdRate').addEventListener('input', function() {
             if (document.getElementById('urdMetalType').value === 'gold') {
@@ -2262,6 +2411,9 @@
         calculateGold(); 
         calculateURD(); 
         updateRateBoard();
+
+        // LONG PRESS METAL RATE BOX => +10 / -10
+        setupRateLongPress();
 
         // LONG PRESS RATE BOARD TO GENERATE POSTER IMAGE CARD
         let holdTimerRates;
